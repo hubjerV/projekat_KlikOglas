@@ -1,3 +1,4 @@
+'''
 from sqlmodel import create_engine
 #ovaj deo nije gootv mora da se spoji na bazu!!
 
@@ -14,3 +15,12 @@ postgresql_url = f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HO
 
 # Kreiranje engine objekta za SQLModel
 engine = create_engine(postgresql_url)
+'''
+from sqlmodel import create_engine, Session
+
+DATABASE_URL = "postgresql://postgres:lozinka@localhost:5432/moja_baza"
+
+engine = create_engine(DATABASE_URL, echo=True)
+
+def get_session():
+    return Session(engine)
