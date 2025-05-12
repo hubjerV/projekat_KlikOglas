@@ -16,13 +16,3 @@ app.add_middleware(
 async def root():
     return {"message": "Pozdrav sa FastAPI backend-a!"}
 
-# Novi endpoint za vraćanje podataka
-@app.get("/podaci")
-async def get_podaci():
-    # Ovde dodaj svoje podatke
-    podaci = {
-        "ime": "Marko",
-        "prezime": "Marković",
-        "godine": 28
-    }
-    return podaci
