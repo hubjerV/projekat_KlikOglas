@@ -1,41 +1,29 @@
-'''
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-app = FastAPI()
-
-# Dodavanje CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Omogućava sve domene da prave zahteve (možeš ograničiti na konkretne domene ako želiš)
-    allow_credentials=True,
-    allow_methods=["*"],  # Omogućava sve HTTP metode (GET, POST, itd.)
-    allow_headers=["*"],  # Omogućava sve zaglavlja
-)
-
-@app.get("/")
-async def root():
-    return {"message": "Pozdrav sa FastAPI backend-a!"}
-
-'''
-
 from fastapi import FastAPI, Depends
 from sqlalchemy.exc import OperationalError
 from sqlalchemy import text
 from database import get_session
+from controllers import user
+from sqlmodel import SQLModel
+from database import engine
 
 app = FastAPI()
+
+# 🌟 Pravimo tabele pri pokretanju aplikacije
+@app.on_event("startup")
+def on_startup():
+    SQLModel.metadata.create_all(engine)
 
 @app.get("/")
 def read_root():
     return {"message": "Zdravo iz FastAPI!"}
 
-
 @app.get("/test-db")
 def test_db(session = Depends(get_session)):
     try:
-        session.execute(text("SELECT 1"))   # ⬅️ Ispravljeno
+        session.execute(text("SELECT 1"))
         return {"status": "OK", "message": "Baza uspešno povezana"}
     except OperationalError as e:
         return {"status": "ERROR", "message": str(e)}
 
+# 📌 Dodaj rute za login/registraciju
+app.include_router(user.router, prefix="/auth", tags=["Auth"])
