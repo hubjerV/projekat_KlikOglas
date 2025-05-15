@@ -4,6 +4,10 @@ from database import get_session
 from schemas.user import UserCreate, UserLogin, UserRead
 from repositories.user import get_user_by_username, create_user
 from services.auth import hash_password, verify_password, create_access_token
+from models.user import User
+from typing import List
+from sqlmodel import select
+
 
 router = APIRouter()
 
@@ -22,3 +26,8 @@ def login(user: UserLogin, session: Session = Depends(get_session)):
         raise HTTPException(status_code=401, detail="Neispravni podaci")
     token = create_access_token({"sub": db_user.username})
     return {"access_token": token, "token_type": "bearer"}
+
+
+@router.get("/users", response_model=List[UserRead])
+def list_users(session: Session = Depends(get_session)):
+    return session.exec(select(User)).all()
