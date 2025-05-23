@@ -1,140 +1,241 @@
+'use client';
+
 import dynamic from 'next/dynamic';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useUser } from '@/contexts/UserContext';
+import { usePathname } from 'next/navigation';
 import { useNewsletterModalContext } from '@/contexts/newsletter-modal.context';
-import { ScrollPositionEffectProps, useScrollPosition } from '../../hooks/useScrollPosition';
-import { NavItems, SingleNavItem } from '../../../types';
 import { media } from '@/utils/media';
-import Button from './Button';
-import Container from './Container';
-import Drawer from './Drawer';
 import { HamburgerIcon } from './HamburgerIcon';
 import Logo from './Logo';
-import { usePathname } from 'next/navigation';
-
+import Button from './Button';
+import Container from './Container';
 
 const ColorSwitcher = dynamic(() => import('../components/ColorSwitcher'), { ssr: false });
 
-type NavbarProps = { items: NavItems };
-type ScrollingDirections = 'up' | 'down' | 'none';
-type NavbarContainerProps = { hidden: boolean; transparent: boolean };
+type NavbarProps = {
+  items: { title: string; href: string; outlined?: boolean }[];
+};
 
 export default function Navbar({ items }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, setUser } = useUser();
 
-  const { toggle } = Drawer.useDrawer();
-  const [scrollingDirection, setScrollingDirection] = useState<ScrollingDirections>('none');
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  let lastScrollY = useRef(0);
-  const lastRoute = useRef('');
-  const stepSize = useRef(50);
-
-useScrollPosition(scrollPositionCallback, [], undefined, undefined, 50); // ne koristi router.asPath
-
-  function scrollPositionCallback({ currPos }: ScrollPositionEffectProps) {
-    const routerPath = pathname;
-    const hasRouteChanged = routerPath !== lastRoute.current;
-
-    if (hasRouteChanged) {
-      lastRoute.current = routerPath;
-      setScrollingDirection('none');
-      return;
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
     }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-    const currentScrollY = currPos.y;
-    const isScrollingUp = currentScrollY > lastScrollY.current;
-    const scrollDifference = Math.abs(lastScrollY.current - currentScrollY);
-    const hasScrolledWholeStep = scrollDifference >= stepSize.current;
-    const isInNonCollapsibleArea = lastScrollY.current > -50;
-
-    if (isInNonCollapsibleArea) {
-      setScrollingDirection('none');
-      lastScrollY.current = currentScrollY;
-      return;
-    }
-
-    if (!hasScrolledWholeStep) {
-      lastScrollY.current = currentScrollY;
-      return;
-    }
-
-    setScrollingDirection(isScrollingUp ? 'up' : 'down');
-    lastScrollY.current = currentScrollY;
-  }
-
-  const isNavbarHidden = scrollingDirection === 'down';
-  const isTransparent = scrollingDirection === 'none';
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+  }, [isMobileMenuOpen]);
 
   return (
-    <NavbarContainer hidden={isNavbarHidden} transparent={isTransparent}>
+    <NavbarContainer>
       <Content>
-        <NextLink href="/" passHref>
-          <LogoWrapper>
-            <Logo />
-          </LogoWrapper>
-        </NextLink>
-        
-          <NavItemList>
-            {items.map((singleItem) => (
-              <NavItem key={singleItem.href} {...singleItem} />
+        <LogoWrapper>
+          <Logo />
+        </LogoWrapper>
+
+        <NavItemList>
+          {items.map((item) => (
+            <NavItem key={item.href} {...item} />
           ))}
 
-          <NextLink href="/login" passHref>
-            <LoginLink>Login</LoginLink>
-          </NextLink>
-          <NextLink href="/signup" passHref>
-            <SignupButton>Sign Up</SignupButton>
-          </NextLink>
+          {user ? (
+            <>
+              <DropdownWrapper ref={dropdownRef}>
+                <DropdownItem onClick={() => setDropdownOpen(!isDropdownOpen)}>
+                  {user.username}
+                </DropdownItem>
+                {isDropdownOpen && (
+                  <DropdownMenu>
+                    <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100 text-black">
+                      Uredi profil
+                    </Link>
+                  </DropdownMenu>
+                )}
+              </DropdownWrapper>
+
+              <NavItemWrapper>
+                <LogoutButton
+                  onClick={() => {
+                    localStorage.removeItem('access_token');
+                    setUser(null);
+                    router.push('/');
+                  }}
+                >
+                  Logout
+                </LogoutButton>
+              </NavItemWrapper>
+            </>
+          ) : (
+            <>
+              <NavItemWrapper>
+                <LoginLink href="/login">Login</LoginLink>
+              </NavItemWrapper>
+              <NavItemWrapper>
+                <SignupButton href="/signup">Sign Up</SignupButton>
+              </NavItemWrapper>
+            </>
+          )}
         </NavItemList>
 
         <ColorSwitcherContainer>
           <ColorSwitcher />
         </ColorSwitcherContainer>
-        
+
         <HamburgerMenuWrapper>
-          <HamburgerIcon aria-label="Toggle menu" onClick={toggle} />
+          <HamburgerIcon aria-label="Toggle menu" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} />
         </HamburgerMenuWrapper>
+        {isMobileMenuOpen && (
+        <MobileMenuBackdrop onClick={() => setMobileMenuOpen(false)}>
+          <MobileMenu onClick={(e) => e.stopPropagation()}>
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="py-2 px-4 text-black hover:bg-gray-100"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.title}
+              </Link>
+            ))}
+            {user ? (
+              <>
+                <Link href="/profile" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                  Uredi profil
+                </Link>
+                <button
+                  className="py-2 px-4 text-left"
+                  onClick={() => {
+                    localStorage.removeItem('access_token');
+                    setUser(null);
+                    setMobileMenuOpen(false);
+                    router.push('/');
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                  Login
+                </Link>
+                <Link href="/signup" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </MobileMenu>
+        </MobileMenuBackdrop>
+      )}
+
       </Content>
     </NavbarContainer>
   );
 }
 
-function NavItem({ href, title, outlined }: SingleNavItem) {
+function NavItem({ href, title, outlined }: { href: string; title: string; outlined?: boolean }) {
   const { setIsModalOpened } = useNewsletterModalContext();
-
-  function showNewsletterModal() {
-    setIsModalOpened(true);
-  }
-
   if (outlined) {
-    return <CustomButton onClick={showNewsletterModal}>{title}</CustomButton>;
+    return <CustomButton onClick={() => setIsModalOpened(true)}>{title}</CustomButton>;
   }
-
   return (
     <NavItemWrapper outlined={outlined}>
-      <NextLink href={href}>
-        {title}
-    </NextLink>
-
+      <Link href={href}>{title}</Link>
     </NavItemWrapper>
   );
 }
 
-const CustomButton = styled(Button)`
-  padding: 0.75rem 1.5rem;
-  line-height: 1.8;
+const NavbarContainer = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background-color: rgb(var(--navbarBackground));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+`;
+
+const Content = styled(Container)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 `;
 
 const NavItemList = styled.div`
   display: flex;
-  list-style: none;
-
+  align-items: center;
   ${media('<desktop')} {
     display: none;
   }
+`;
+
+const NavItemWrapper = styled.div<{ outlined?: boolean }>`
+  margin-right: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  a {
+    color: rgb(var(--text));
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    display: inline-block;
+    font-size: 1.3rem;
+    letter-spacing: 0.025em;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+`;
+
+const DropdownWrapper = styled.div`
+  position: relative;
+  margin-right: 1.5rem;
+`;
+
+const DropdownItem = styled.span`
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: rgb(var(--text));
+  font-size: 1.3rem;
+  letter-spacing: 0.025em;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  z-index: 9999;
+  min-width: 150px;
 `;
 
 const HamburgerMenuWrapper = styled.div`
@@ -143,90 +244,80 @@ const HamburgerMenuWrapper = styled.div`
   }
 `;
 
-const LogoWrapper = styled.a`
-  display: flex;
+const LogoWrapper = styled.div`
   margin-right: auto;
-  text-decoration: none;
-
-  color: rgb(var(--logoColor));
 `;
 
-const NavItemWrapper = styled.li<Partial<SingleNavItem>>`
-  background-color: ${(p) => (p.outlined ? 'rgb(var(--primary))' : 'transparent')};
-  border-radius: 0.5rem;
-  font-size: 1.3rem;
+const LoginLink = styled(Link)`
+  color: rgb(var(--text));
   text-transform: uppercase;
-  line-height: 2;
-
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1.3rem;
+  letter-spacing: 0.025em;
+  padding: 0.75rem 1.5rem;
+  display: inline-block;
   &:hover {
-    background-color: ${(p) => (p.outlined ? 'rgb(var(--primary), 0.8)' : 'transparent')};
-    transition: background-color 0.2s;
-  }
-
-  a {
-    display: flex;
-    color: ${(p) => (p.outlined ? 'rgb(var(--textSecondary))' : 'rgb(var(--text), 0.75)')};
-    letter-spacing: 0.025em;
-    text-decoration: none;
-    padding: 0.75rem 1.5rem;
-    font-weight: 700;
-  }
-
-  &:not(:last-child) {
-    margin-right: 2rem;
+    opacity: 0.7;
   }
 `;
 
-const NavbarContainer = styled.div<NavbarContainerProps>`
-  display: flex;
-  position: sticky;
-  top: 0;
-  padding: 1.5rem 0;
-  width: 100%;
-  height: 8rem;
-  z-index: var(--z-navbar);
-
-  background-color: rgb(var(--navbarBackground));
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
-  visibility: ${(p) => (p.hidden ? 'hidden' : 'visible')};
-  transform: ${(p) => (p.hidden ? `translateY(-8rem) translateZ(0) scale(1)` : 'translateY(0) translateZ(0) scale(1)')};
-
-  transition-property: transform, visibility, height, box-shadow, background-color;
-  transition-duration: 0.15s;
-  transition-timing-function: ease-in-out;
+const SignupButton = styled(Link)`
+  color: rgb(var(--text));
+  text-transform: uppercase;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1.3rem;
+  letter-spacing: 0.025em;
+  padding: 0.75rem 1.5rem;
+  display: inline-block;
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
-const Content = styled(Container)`
-  display: flex;
-  justify-content: space-between; // ← RAZDVAJA logo i meni
-  align-items: center;
-  width: 100%;
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: rgb(var(--text));
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 0.025em;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
+const CustomButton = styled(Button)`
+  padding: 0.75rem 1.5rem;
+  line-height: 1.8;
+`;
 
 const ColorSwitcherContainer = styled.div`
   width: 4rem;
   margin: 0 1rem;
 `;
 
-const LoginLink = styled.a`
-  display: flex;
-  align-items: center;
-  color: rgb(var(--text));
-  padding: 0.75rem 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 1.3rem;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-  &:hover {
-    opacity: 0.7;
-  }
+const MobileMenuBackdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
 `;
 
-const SignupButton = styled(Button)`
-  margin-left: 1rem;
-  font-size: 1.3rem;
-  padding: 0.75rem 1.5rem;
-  text-transform: uppercase;
+const MobileMenu = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75%;
+  max-width: 320px;
+  height: 100%;
+  background: white;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `;

@@ -2,12 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import HeroIllustration from '../components/HeroIllustration';
+import { useUser } from '@/contexts/UserContext';
+import { jwtDecode } from 'jwt-decode';
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const { setUser } = useUser();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -23,38 +27,46 @@ export default function LoginPage() {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem('access_token', data.access_token);
-      setMessage('✅ Uspješno ste se prijavili!');
-      setTimeout(() => {
-        router.push('/');
-      }, 1500); // malo sačekaj da vidi poruku
+
+      const decoded: any = jwtDecode(data.access_token);
+      setUser({ username: decoded.sub, email: decoded.email }); 
+
+      router.push('/');
+      router.refresh();
     } else {
-      setMessage('❌ Neispravni podaci. Pokušajte ponovo.');
+      setMessage('Neispravni podaci. Pokušajte ponovo.');
     }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <form onSubmit={handleLogin} className="w-full max-w-sm bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-bold mb-4">Login</h2>
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full p-2 border mb-3"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit" className="w-full bg-black text-white py-2 rounded">
-          Login
-        </button>
-      </form>
-      {message && <p className="mt-4 text-center text-sm">{message}</p>}
+    <div className="relative flex items-center justify-center min-h-screen bg-black overflow-hidden px-4">
+      <div className="absolute right-0 bottom-0 w-1/2 max-w-xl opacity-30">
+        <HeroIllustration />
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md p-6 rounded-xl text-white shadow-lg">
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full p-2 mb-3 bg-transparent border border-gray-400 rounded text-white placeholder-gray-300"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 mb-3 bg-transparent border border-gray-400 rounded text-white placeholder-gray-300"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit" className="w-full bg-white text-black py-2 rounded font-bold">
+            Login
+          </button>
+        </form>
+        {message && <p className="mt-4 text-center text-sm text-white">{message}</p>}
+      </div>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default function HomePage() {
     <main>
       <Navbar
         items={[
-          { href: '/', title: 'Home' },
+          { href: '/', title: 'Shop' },
           { href: '/about', title: 'About' },
           { href: '/contact', title: 'Contact', outlined: true },
         ]}

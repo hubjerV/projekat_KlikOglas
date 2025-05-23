@@ -18,13 +18,8 @@ export default function Hero() {
         <Heading>FindIt</Heading>
         <CustomButtonGroup>
           <Button onClick={() => setIsModalOpened(true)}>
-            Subscribe to the newsletter <span>&rarr;</span>
+            AI Chat <span>&rarr;</span>
           </Button>
-          <NextLink href="#whitepaper" passHref>
-            <Button transparent>
-              Features <span>&rarr;</span>
-            </Button>
-          </NextLink>
         </CustomButtonGroup>
       </Contents>
       <ImageContainer>

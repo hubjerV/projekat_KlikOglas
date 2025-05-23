@@ -11,13 +11,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], 
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 🌟 Pravimo tabele pri pokretanju aplikacije
 @app.on_event("startup")
 def on_startup():
     SQLModel.metadata.create_all(engine)
@@ -34,5 +33,4 @@ def test_db(session = Depends(get_session)):
     except OperationalError as e:
         return {"status": "ERROR", "message": str(e)}
 
-# 📌 Dodaj rute za login/registraciju
 app.include_router(user.router, prefix="/auth", tags=["Auth"])
