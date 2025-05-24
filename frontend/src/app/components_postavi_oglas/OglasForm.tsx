@@ -6,7 +6,6 @@ import SelectCategory from './SelectCategory';
 import SubmitButton from './SubmitButton';
 import axios from 'axios';
 import HeroIllustration from '../components/HeroIllustration';
-;
 
 
 interface OglasResponse {
