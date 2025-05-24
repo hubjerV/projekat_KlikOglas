@@ -1,19 +1,19 @@
 'use client';
 
-import Navbar from './components/Navbar';
-import Hero from '@/views/HomePage/Hero';
+import React from 'react';
+// Ispravno:
+import OglasForm from './components_postavi_oglas/OglasForm';
+import OglasiPrikaz from './oglasi_prikaz/Oglasi_prikaz';
 
-export default function HomePage() {
+
+export default function Home() {
   return (
-    <main>
-      <Navbar
-        items={[
-          { href: '/', title: 'Home' },
-          { href: '/about', title: 'About' },
-          { href: '/contact', title: 'Contact', outlined: true },
-        ]}
-      />
-      <Hero />
+    <main className="min-h-screen bg-gray-100 p-6">
+      <OglasForm />
+
+      <hr className="my-10 border-gray-300" />
+
+      <OglasiPrikaz />
     </main>
   );
 }

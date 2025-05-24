@@ -6,12 +6,17 @@ from controllers import user
 from sqlmodel import SQLModel
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
+#from controllers.postavi_oglas import router as oglasi_router
+from controllers import postavi_oglas
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], 
+    #allow_origins=["http://localhost:3000"],
+    allow_origins=["*"] ,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,3 +41,9 @@ def test_db(session = Depends(get_session)):
 
 # 📌 Dodaj rute za login/registraciju
 app.include_router(user.router, prefix="/auth", tags=["Auth"])
+
+#app.include_router(oglasi_router)
+app.include_router(postavi_oglas.router)
+
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
