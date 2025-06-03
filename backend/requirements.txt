@@ -3,3 +3,6 @@ uvicorn[standard]
 sqlalchemy
 sqlmodel
 email-validator
+psycopg2-binary
+passlib[bcrypt]
+

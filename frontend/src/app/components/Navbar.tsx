@@ -71,6 +71,11 @@ export default function Navbar({ items }: NavbarProps) {
               </DropdownWrapper>
 
               <NavItemWrapper>
+                <Link href="/oglasi">Postavi oglas</Link>
+              </NavItemWrapper>
+
+
+              <NavItemWrapper>
                 <LogoutButton
                   onClick={() => {
                     localStorage.removeItem('access_token');
@@ -119,6 +124,10 @@ export default function Navbar({ items }: NavbarProps) {
                 <Link href="/profile" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
                   Uredi profil
                 </Link>
+                <Link href="/oglasi" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                    Postavi oglas
+                </Link>
+
                 <button
                   className="py-2 px-4 text-left"
                   onClick={() => {
