@@ -2,6 +2,8 @@
 
 import Navbar from './components/Navbar';
 import Hero from '@/views/HomePage/Hero';
+import OglasiPrikaz from './oglasi_prikaz/OglasiPrikaz';
+
 
 export default function HomePage() {
   return (
@@ -14,6 +16,7 @@ export default function HomePage() {
         ]}
       />
       <Hero />
+      <OglasiPrikaz />
     </main>
   );
 }
