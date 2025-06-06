@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 #from controllers.postavi_oglas import router as oglasi_router
 from controllers import postavi_oglas
 from fastapi.staticfiles import StaticFiles
+from controllers import favorite_controller, report_controller
 
 app = FastAPI()
 
@@ -45,3 +46,7 @@ app.include_router(postavi_oglas.router)
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# omiljeni i prijava oglasa
+app.include_router(favorite_controller.router)
+app.include_router(report_controller.router)
