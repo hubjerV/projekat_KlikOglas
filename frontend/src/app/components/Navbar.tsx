@@ -176,8 +176,9 @@ const NavbarContainer = styled.div`
   top: 0;
   z-index: 1000;
   width: 100%;
-  background-color: rgb(var(--navbarBackground));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+ background-color: #1a1a1a; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px); 
 `;
 
 const Content = styled(Container)`

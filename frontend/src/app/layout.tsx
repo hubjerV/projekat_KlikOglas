@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NewsletterModalContextProvider } from "@/contexts/newsletter-modal.context";
-import { UserProvider } from "@/contexts/UserContext"; 
+import { UserProvider } from "@/contexts/UserContext";
+import Navbar from "./components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <UserProvider> {/* ✅ OBMOTAČ */}
+        <UserProvider>
           <NewsletterModalContextProvider>
+
+            {/* ✅ Navbar je ovde sada na svakoj stranici */}
+            <Navbar
+              items={[
+                { href: "/oglasi_prikaz", title: "Shop" },
+                { href: "/about", title: "About" },
+                { href: "/contact", title: "Contact", outlined: true },
+              ]}
+            />
+
             {children}
+
           </NewsletterModalContextProvider>
         </UserProvider>
       </body>

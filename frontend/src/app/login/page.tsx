@@ -61,7 +61,11 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit" className="w-full bg-white text-black py-2 rounded font-bold">
+          <button
+            type="submit"
+            className="w-full bg-white text-black py-2 rounded font-bold hover:bg-gray-400"
+           
+          >
             Login
           </button>
         </form>
