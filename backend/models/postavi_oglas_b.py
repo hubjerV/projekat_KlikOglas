@@ -16,3 +16,4 @@ class Oglas(SQLModel, table=True):
     kontakt: Optional[str] = Field(default=None)
     kategorija: str = Field(nullable=False)
     datum_postavljanja: Optional[datetime] = Field(default_factory=datetime.utcnow)
+  

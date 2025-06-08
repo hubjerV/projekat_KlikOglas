@@ -4,6 +4,8 @@ import FileUpload from './FileUpload';
 import SubmitButton from './SubmitButton';
 import SelectCategory from './SelectCategory';
 import axios from 'axios';
+import HeroIllustration from '../components/HeroIllustration'; 
+
 
 interface OglasResponse {
   message: string;
@@ -67,9 +69,16 @@ const OglasForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900 w-full flex flex-col items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-gray-800 p-6 rounded shadow-lg mx-4 my-8">
-        <h2 className="text-2xl font-bold mb-6 text-white">Postavi novi oglas</h2>
+  <div className="relative w-full min-h-screen bg-black text-white overflow-hidden">
+    {/* Pozadinska ilustracija */}
+    <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
+      <HeroIllustration />
+    </div>
+
+    {/* Glavni sadržaj forme */}
+    <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-2xl">
+        <h2 className="text-3xl font-bold mb-6 text-white text-center">Postavi novi oglas</h2>
 
         <InputField label="Naslov" name="naslov" value={form.naslov} onChange={handleChange} />
         <TextAreaField label="Opis" name="opis" value={form.opis} onChange={handleChange} />
@@ -81,7 +90,8 @@ const OglasForm: React.FC = () => {
         <SubmitButton />
       </form>
     </div>
-  );
+  </div>
+);
 };
 
 export default OglasForm;

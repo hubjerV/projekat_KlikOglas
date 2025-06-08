@@ -63,6 +63,9 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+
+
+
 interface Oglas {
   id: number;
   naslov: string;
@@ -73,6 +76,10 @@ interface Oglas {
   kategorija: string;
   slike: string[];
 }
+
+
+
+
 
 export default function OglasiPrikaz() {
   
@@ -205,4 +212,3 @@ export default function OglasiPrikaz() {
     </div>
   );
 }
-
