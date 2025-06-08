@@ -24,3 +24,7 @@ engine = create_engine(DATABASE_URL, echo=True)
 
 def get_session():
     return Session(engine)
+
+def get_db():
+    with Session(engine) as session:
+        yield session
