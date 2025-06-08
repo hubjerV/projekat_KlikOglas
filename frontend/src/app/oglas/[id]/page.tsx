@@ -370,8 +370,6 @@ export default function DetaljiOglasa() {
     //   .then((res) => res.json())
     //   .then((data) => setPoruke(data))
     //   .catch((err) => console.error('Greška pri dohvaćanju poruka:', err));
-        
-
   }, [params.id]);
 
   function handlePosaljiPoruku() {
@@ -406,49 +404,57 @@ export default function DetaljiOglasa() {
       });
   }
 
-  if (!oglas) return <p style={{ padding: '2rem' }}>Učitavanje detalja oglasa...</p>;
+  if (!oglas) return <p className="p-8">Učitavanje detalja oglasa...</p>;
 
   return (
-  <div className="flex justify-center items-center min-h-screen bg-[#121212] px-4">
-    <div className="flex flex-col md:flex-row gap-8 max-w-5xl w-full bg-[#1a1a1a] text-white p-6 rounded-xl shadow-lg">
+    <div className="oglas-wrapper">
+    <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
 
-      {/* Leva strana - Slika */}
-      <div className="flex-1 flex justify-center items-center">
-        {oglas.slike.length > 0 ? (
-          <img
-            src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-            alt="Slika oglasa"
-            className="w-full max-w-md h-auto object-cover rounded-lg bg-[#2a2a2a]"
-          />
-        ) : (
-          <p className="italic text-gray-400">Nema slike</p>
-        )}
+    {/*Leva strana - slike */}
+    <div className="oglas-levo flex flex-col gap-4 w-full md:w-1/2">
+      <div className="oglas-slika bg-[#f0f0f0] flex justify-center items-center rounded">
+        <img
+          src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
+          alt="Slika oglasa"
+          className="w-full h-auto object-contain max-h-[400px]"
+        />
       </div>
 
-      {/* Desna strana - Info */}
-      <div className="flex-1 space-y-3">
-        <h2 className="text-3xl font-bold">{oglas.naslov}</h2>
-        <p className="text-gray-300"><strong>Opis:</strong> {oglas.opis}</p>
-        <p className="text-gray-300"><strong>Lokacija:</strong> {oglas.lokacija}</p>
-        <p className="text-gray-300"><strong>Kategorija:</strong> {oglas.kategorija}</p>
-        <p className="text-gray-300"><strong>Kontakt:</strong> {oglas.kontakt}</p>
-        <p className="text-[#1abc9c] font-bold text-lg"><strong>{oglas.cijena} KM</strong></p>
-
-        <button
-          onClick={() => window.location.href = `/chat/${oglas.id}`}
-          className="mt-4 bg-[#e0843f] hover:bg-[#c36e2a] text-white py-2 px-4 rounded font-semibold"
-        >
-          💬 Otvori Chat
-        </button>
-
-        <Link href="/" className="block mt-6 text-[#1abc9c] hover:underline">
-          ← Nazad na oglase
-        </Link>
+      <div className="flex gap-2 overflow-x-auto">
+        {oglas.slike.map((slika, index) => (
+          <img
+            key={index}
+            src={`http://localhost:8000${encodeURI(slika)}`}
+            alt={`Slika ${index + 1}`}
+            className="w-20 h-20 object-cover rounded border"
+          />
+        ))}
       </div>
     </div>
+
+    {/* Desna strana - info */}
+    <div className="oglas-desno w-full md:w-1/2 space-y-3">
+      <h1 className="naslov">{oglas.naslov}</h1>
+      <p className="text-xl font-bold text-gray-800">{oglas.cijena} BAM</p>
+
+      
+      <p><strong>Opis: </strong> {oglas.opis}</p>
+
+      <button className="oglas-chat-btn w-full">🛒 {oglas.cijena} BAM</button>
+
+      <button
+            onClick={() => window.location.href = `/chat/${oglas.id}`}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded font-semibold"
+          >
+            💬 Otvori Chat
+          </button>
+
+          <Link href="/" className="block mt-6 text-blue-600 hover:underline">
+            ← Nazad na oglase
+          </Link>
+    </div>
   </div>
-);
-
+</div>
+  );
 }
-
 

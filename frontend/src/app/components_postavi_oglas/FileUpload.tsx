@@ -38,28 +38,27 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
 
   return (
     <div className="mb-4">
-  <label className="block text-sm font-medium text-white mb-1">Dodaj slike</label>
+      <label className="block text-sm font-medium text-gray-800 mb-1">Dodaj slike</label>
 
-  <label
-    htmlFor="file-upload"
-    className="inline-block cursor-pointer rounded bg-gray-700 px-4 py-2 text-white hover:bg-gray-600 transition"
-  >
-    Odaberi slike
-  </label>
+      <label
+        htmlFor="file-upload"
+        className="inline-block cursor-pointer rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+      >
+        Odaberi slike
+      </label>
 
-  <input
-    id="file-upload"
-    type="file"
-    multiple
-    accept="image/*"
-    onChange={handleFileChange}
-    className="hidden"
-    disabled={uploading}
-  />
+      <input
+        id="file-upload"
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+        disabled={uploading}
+      />
 
-  {uploading && <p className="text-white mt-2">Učitavanje slika...</p>}
-</div>
-
+      {uploading && <p className="text-gray-600 mt-2">Učitavanje slika...</p>}
+    </div>
   );
 };
 

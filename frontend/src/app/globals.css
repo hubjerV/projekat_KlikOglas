@@ -5,32 +5,19 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
+
 
 .oglas-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 3rem 1rem;
-  background-color: #f4f4f4;
+  background-color: #f9f9f9; /* svetlija pozadina */
   min-height: 100vh;
 }
 
@@ -38,10 +25,10 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  background-color: white;
+  background-color: #ffffff; /* čista bela */
   color: #333;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08); /* malo blaža senka */
   padding: 2rem;
   max-width: 1000px;
   width: 100%;
@@ -59,7 +46,7 @@ body {
   max-height: 400px;
   object-fit: cover;
   border-radius: 8px;
-  background-color: #f0f0f0;
+  background-color: #eee; /* svetlije sivo */
 }
 
 .oglas-desno {
@@ -78,7 +65,7 @@ body {
 }
 
 .oglas-chat-btn {
-  background-color: #e0843f;
+  background-color: #1e90ff; /* plava umesto narandžaste */
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -90,7 +77,7 @@ body {
 }
 
 .oglas-chat-btn:hover {
-  background-color: #c36e2a;
+  background-color: #1c78d0;
 }
 
 .nazad-link {
@@ -104,3 +91,4 @@ body {
 .nazad-link:hover {
   text-decoration: underline;
 }
+

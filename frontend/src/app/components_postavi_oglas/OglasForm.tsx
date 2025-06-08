@@ -4,8 +4,7 @@ import FileUpload from './FileUpload';
 import SubmitButton from './SubmitButton';
 import SelectCategory from './SelectCategory';
 import axios from 'axios';
-import HeroIllustration from '../components/HeroIllustration'; 
-
+import HeroIllustration from '../components/HeroIllustration';
 
 interface OglasResponse {
   message: string;
@@ -18,7 +17,7 @@ const TextAreaField: React.FC<{
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }> = ({ label, name, value, onChange }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-white mb-1" htmlFor={name}>
+    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor={name}>
       {label}
     </label>
     <textarea
@@ -26,7 +25,7 @@ const TextAreaField: React.FC<{
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full p-2 bg-transparent border border-gray-400 rounded text-white placeholder-gray-300"
+      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400"
       rows={4}
       required
     />
@@ -69,29 +68,30 @@ const OglasForm: React.FC = () => {
   };
 
   return (
-  <div className="relative w-full min-h-screen bg-black text-white overflow-hidden">
-    {/* Pozadinska ilustracija */}
-    <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
-      <HeroIllustration />
-    </div>
+    <div className="relative w-full min-h-screen bg-[#f9f9f9] text-[#111] overflow-hidden">
+      <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
+        <HeroIllustration />
+      </div>
 
-    {/* Glavni sadržaj forme */}
-    <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-2xl">
-        <h2 className="text-3xl font-bold mb-6 text-white text-center">Postavi novi oglas</h2>
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-gray-200"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Postavi novi oglas</h2>
 
-        <InputField label="Naslov" name="naslov" value={form.naslov} onChange={handleChange} />
-        <TextAreaField label="Opis" name="opis" value={form.opis} onChange={handleChange} />
-        <FileUpload onUploadComplete={(urls) => setSlikeUrls(urls)} />
-        <InputField label="Cijena" name="cijena" value={form.cijena} onChange={handleChange} type="number" />
-        <InputField label="Lokacija" name="lokacija" value={form.lokacija} onChange={handleChange} />
-        <InputField label="Kontakt" name="kontakt" value={form.kontakt} onChange={handleChange} />
-        <SelectCategory value={form.kategorija} onChange={handleChange} />
-        <SubmitButton />
-      </form>
+          <InputField label="Naslov" name="naslov" value={form.naslov} onChange={handleChange} />
+          <TextAreaField label="Opis" name="opis" value={form.opis} onChange={handleChange} />
+          <FileUpload onUploadComplete={(urls) => setSlikeUrls(urls)} />
+          <InputField label="Cijena" name="cijena" value={form.cijena} onChange={handleChange} type="number" />
+          <InputField label="Lokacija" name="lokacija" value={form.lokacija} onChange={handleChange} />
+          <InputField label="Kontakt" name="kontakt" value={form.kontakt} onChange={handleChange} />
+          <SelectCategory value={form.kategorija} onChange={handleChange} />
+          <SubmitButton />
+        </form>
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default OglasForm;
