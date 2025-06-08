@@ -1,63 +1,3 @@
-// 'use client';
-
-// import React, { useEffect, useState } from 'react';
-
-// interface Oglas {
-//   id: number;
-//   naslov: string;
-//   opis: string;
-//   cijena: number;
-//   lokacija: string;
-//   kontakt: string;
-//   kategorija: string;
-// }
-
-// export default function OglasiPrikaz() {
-//   const [oglasi, setOglasi] = useState<Oglas[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     fetch('http://localhost:8000/oglasi')
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setOglasi(data);
-//         setLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error('Greška pri dohvaćanju oglasa:', err);
-//         setLoading(false);
-//       });
-//   }, []);
-
-//   if (loading) return <p>Učitavanje oglasa...</p>;
-
-//   return (
-//     <div style={{ padding: '2rem' }}>
-//       <h2>Prikaz oglasa</h2>
-//       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-//         {oglasi.map((oglas) => (
-//           <div
-//             key={oglas.id}
-//             style={{
-//               border: '1px solid #ccc',
-//               padding: '1rem',
-//               borderRadius: '8px',
-//               width: '250px',
-//             }}
-//           >
-//             <h3>{oglas.naslov}</h3>
-//             <p><strong>Opis:</strong> {oglas.opis}</p>
-//             <p><strong>Cijena:</strong> {oglas.cijena} KM</p>
-//             <p><strong>Lokacija:</strong> {oglas.lokacija}</p>
-//             <p><strong>Kontakt:</strong> {oglas.kontakt}</p>
-//             <p><strong>Kategorija:</strong> {oglas.kategorija}</p>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -75,7 +15,6 @@ interface Oglas {
 }
 
 export default function OglasiPrikaz() {
-  
   const [oglasi, setOglasi] = useState<Oglas[]>([]);
   const [search, setSearch] = useState('');
   const [lokacija, setLokacija] = useState('');
@@ -110,7 +49,6 @@ export default function OglasiPrikaz() {
   }, []);
 
   return (
-
     <div style={{ padding: '2rem' }}>
       <h2>Pretraga i filteri</h2>
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
@@ -123,86 +61,72 @@ export default function OglasiPrikaz() {
         <button onClick={fetchOglasi}>Filtriraj</button>
       </div>
 
-
       <h2>Prikaz oglasa</h2>
       {loading ? (
         <p>Učitavanje...</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+          {oglasi.map((oglas) => (
+            <Link
+              key={oglas.id}
+              href={`/oglas/${oglas.id}`}
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  padding: '1rem',
+                  width: '260px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.2s ease',
+                  border: '1px solid #eee',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+                onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              >
+                {oglas.slike && oglas.slike.length > 0 ? (
+                  <img
+                    src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
+                    alt="Slika oglasa"
+                    style={{
+                      width: '100%',
+                      height: '160px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '160px',
+                      backgroundColor: '#eee',
+                      color: '#666',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontStyle: 'italic',
+                      borderRadius: '8px',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    Nema slike
+                  </div>
+                )}
 
-
-
-<div style={{
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '1rem',
-  justifyContent: 'center',
-}}>
-  {oglasi.map((oglas) => (
-    <Link
-      key={oglas.id}
-      href={`/oglas/${oglas.id}`}
-      style={{
-        textDecoration: 'none',
-        color: 'inherit',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: '#1e1e1e',
-          borderRadius: '12px',
-          padding: '1rem',
-          width: '260px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-          transition: 'transform 0.2s ease',
-        }}
-        onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
-        onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-      >
-        {oglas.slike && oglas.slike.length > 0 ? (
-          <img
-            src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-            alt="Slika oglasa"
-            style={{
-              width: '100%',
-              height: '160px',
-              objectFit: 'cover',
-              borderRadius: '8px',
-              marginBottom: '10px',
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: '100%',
-              height: '160px',
-              backgroundColor: '#333',
-              color: '#aaa',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontStyle: 'italic',
-              borderRadius: '8px',
-              marginBottom: '10px',
-            }}
-          >
-            Nema slike
-          </div>
-        )}
-
-        <h3 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '0.3rem' }}>{oglas.naslov}</h3>
-        <p style={{ color: '#1abc9c', fontWeight: 'bold', fontSize: '1rem' }}>{oglas.cijena} KM</p>
-        <p style={{ color: '#888', fontSize: '0.8rem' }}>{oglas.lokacija}</p>
-      </div>
-    </Link>
-  ))}
-</div>
-
-
+                <h3 style={{ color: '#111', fontSize: '1.1rem', marginBottom: '0.3rem' }}>{oglas.naslov}</h3>
+                <p style={{ color: '#1abc9c', fontWeight: 'bold', fontSize: '1rem' }}>{oglas.cijena} KM</p>
+                <p style={{ color: '#888', fontSize: '0.8rem' }}>{oglas.lokacija}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>
   );
 }
-

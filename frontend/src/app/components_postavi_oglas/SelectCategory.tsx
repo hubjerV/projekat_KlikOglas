@@ -7,7 +7,7 @@ interface SelectCategoryProps {
 
 const SelectCategory: React.FC<SelectCategoryProps> = ({ value, onChange }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-white mb-1" htmlFor="kategorija">
+    <label className="block text-sm font-medium text-gray-800 mb-1" htmlFor="kategorija">
       Kategorija
     </label>
     <select
@@ -15,7 +15,7 @@ const SelectCategory: React.FC<SelectCategoryProps> = ({ value, onChange }) => (
       name="kategorija"
       value={value}
       onChange={onChange}
-      className="w-full p-2 bg-gray-800 border border-gray-400 rounded text-white"
+      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
     >
       <option value="">Izaberite kategoriju</option>
       <option value="vozila">Vozila</option>

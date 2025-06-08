@@ -23,8 +23,13 @@ DATABASE_URL = "postgresql://postgres:lozinka@localhost:5432/moja_baza"
 engine = create_engine(DATABASE_URL, echo=True)
 
 def get_session():
+<<<<<<< HEAD
     return Session(engine)
 
 def get_db():
     with Session(engine) as session:
         yield session
+=======
+    with Session(engine) as session:
+        yield session
+>>>>>>> origin/izmena-prikaza-oglasa

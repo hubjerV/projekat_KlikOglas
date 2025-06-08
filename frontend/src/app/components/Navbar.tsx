@@ -14,7 +14,6 @@ import Logo from './Logo';
 import Button from './Button';
 import Container from './Container';
 
-const ColorSwitcher = dynamic(() => import('../components/ColorSwitcher'), { ssr: false });
 
 type NavbarProps = {
   items: { title: string; href: string; outlined?: boolean }[];
@@ -81,6 +80,7 @@ export default function Navbar({ items }: NavbarProps) {
                 <LogoutButton
                   onClick={() => {
                     localStorage.removeItem('access_token');
+                    localStorage.removeItem("pregledaniOglasi");
                     setUser(null);
                     router.push('/');
                   }}
@@ -101,9 +101,7 @@ export default function Navbar({ items }: NavbarProps) {
           )}
         </NavItemList>
 
-        <ColorSwitcherContainer>
-          <ColorSwitcher />
-        </ColorSwitcherContainer>
+
 
         <HamburgerMenuWrapper>
           <HamburgerIcon aria-label="Toggle menu" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} />
@@ -179,12 +177,20 @@ function NavItem({ href, title, outlined }: { href: string; title: string; outli
 const NavbarContainer = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 9999;
   width: 100%;
+<<<<<<< HEAD
   background-color: #1a1a1a; 
+=======
+background-color: #ffffff;
+color: #171717;
+
+>>>>>>> origin/izmena-prikaza-oglasa
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px); 
 `;
+
+
+
 
 const Content = styled(Container)`
   display: flex;
@@ -210,7 +216,8 @@ const NavItemWrapper = styled.div<{ outlined?: boolean }>`
   text-transform: uppercase;
 
   a {
-    color: rgb(var(--text));
+color: #171717;
+
     text-decoration: none;
     padding: 0.75rem 1.5rem;
     display: inline-block;
@@ -233,7 +240,8 @@ const DropdownItem = styled.span`
   padding: 0.75rem 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: rgb(var(--text));
+color: #171717;
+
   font-size: 1.3rem;
   letter-spacing: 0.025em;
 
@@ -246,7 +254,9 @@ const DropdownMenu = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: white;
+  background-color: #ffffff;
+color: #171717;
+
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   z-index: 9999;
@@ -264,7 +274,8 @@ const LogoWrapper = styled.div`
 `;
 
 const LoginLink = styled(Link)`
-  color: rgb(var(--text));
+color: #171717;
+
   text-transform: uppercase;
   font-weight: bold;
   text-decoration: none;
@@ -278,7 +289,8 @@ const LoginLink = styled(Link)`
 `;
 
 const SignupButton = styled(Link)`
-  color: rgb(var(--text));
+color: #171717;
+
   text-transform: uppercase;
   font-weight: bold;
   text-decoration: none;
@@ -294,7 +306,8 @@ const SignupButton = styled(Link)`
 const LogoutButton = styled.button`
   background: none;
   border: none;
-  color: rgb(var(--text));
+color: #171717;
+
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1.3rem;
@@ -330,7 +343,10 @@ const MobileMenu = styled.div`
   width: 75%;
   max-width: 320px;
   height: 100%;
-  background: white;
+ background-color: #ffffff;
+color: #171717;
+
+
   padding: 1.5rem;
   overflow-y: auto;
   display: flex;

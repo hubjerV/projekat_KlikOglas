@@ -5,6 +5,7 @@ import { NewsletterModalContextProvider } from "@/contexts/newsletter-modal.cont
 import { UserProvider } from "@/contexts/UserContext";
 import Navbar from "./components/Navbar";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,24 +28,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <UserProvider>
-          <NewsletterModalContextProvider>
+      <head>
+      </head>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 
-            {/* ✅ Navbar je ovde sada na svakoj stranici */}
-            <Navbar
-              items={[
-                { href: "/oglasi_prikaz", title: "Shop" },
-                { href: "/about", title: "About" },
-                { href: "/contact", title: "Contact", outlined: true },
-              ]}
-            />
+            <UserProvider>
+              <NewsletterModalContextProvider>
+                <Navbar
+                  items={[
+                    { href: "/oglasi_prikaz", title: "Shop" },
+                    { href: "/about", title: "About" },
+                    { href: "/contact", title: "Contact", outlined: true },
+                  ]}
+                />
+                {children}
+              </NewsletterModalContextProvider>
+            </UserProvider>
 
-            {children}
+        </body>
 
-          </NewsletterModalContextProvider>
-        </UserProvider>
-      </body>
     </html>
   );
 }
