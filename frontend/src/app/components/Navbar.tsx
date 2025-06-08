@@ -78,6 +78,7 @@ export default function Navbar({ items }: NavbarProps) {
                 <LogoutButton
                   onClick={() => {
                     localStorage.removeItem('access_token');
+                    localStorage.removeItem("pregledaniOglasi");
                     setUser(null);
                     router.push('/');
                   }}

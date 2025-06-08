@@ -13,8 +13,9 @@ class OglasRead(BaseModel):
     kontakt: Optional[str]
     kategorija: str
     datum_postavljanja: datetime
-    #id_korisnika: int  # ✅ OVO MORA BITI TU
     id_korisnika: Optional[int] = None 
+    broj_pregleda: int
+
 
     class Config:
         orm_mode = True

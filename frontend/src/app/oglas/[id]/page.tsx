@@ -333,7 +333,9 @@ interface Oglas {
   kontakt: string;
   kategorija: string;
   slike: string[];
-  id_korisnika?: number;
+  id_korisnika?: number;  
+  broj_pregleda: number;
+
 }
 
 interface Message {
@@ -357,7 +359,10 @@ export default function DetaljiOglasa() {
 
     fetch(`http://localhost:8000/oglasi/${id}`)
       .then((res) => res.json())
-      .then((data) => setOglas(data))
+      .then((data) => {
+            setOglas(data);
+            dodajUHistoriju(data); // ← Ovdje je sada ispravno
+          })
       .catch((err) => console.error('Greška pri dohvaćanju oglasa:', err));
 
     const token = localStorage.getItem("access_token");
@@ -371,6 +376,20 @@ export default function DetaljiOglasa() {
     //   .then((data) => setPoruke(data))
     //   .catch((err) => console.error('Greška pri dohvaćanju poruka:', err));
   }, [params.id]);
+
+
+  function dodajUHistoriju(oglas: Oglas) {
+  const prethodni = JSON.parse(localStorage.getItem("pregledaniOglasi") || "[]") as Oglas[];
+
+  const bezDuplikata = prethodni.filter((o) => o.id !== oglas.id);
+
+  const novi = [oglas, ...bezDuplikata];
+
+  const ograniceni = novi.slice(0, 5);
+
+  localStorage.setItem("pregledaniOglasi", JSON.stringify(ograniceni));
+}
+
 
   function handlePosaljiPoruku() {
     if (!oglas) return;
@@ -407,6 +426,7 @@ export default function DetaljiOglasa() {
   if (!oglas) return <p className="p-8">Učitavanje detalja oglasa...</p>;
 
   return (
+    <div>
     <div className="oglas-wrapper">
     <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
 
@@ -439,6 +459,7 @@ export default function DetaljiOglasa() {
 
       
       <p><strong>Opis: </strong> {oglas.opis}</p>
+  <p className="text-sm text-gray-500">{oglas.broj_pregleda} pregleda</p>
 
       <button className="oglas-chat-btn w-full">🛒 {oglas.cijena} BAM</button>
 
@@ -449,11 +470,34 @@ export default function DetaljiOglasa() {
             💬 Otvori Chat
           </button>
 
-          <Link href="/" className="block mt-6 text-blue-600 hover:underline">
+          <Link href="/oglasi_prikaz" className="block mt-6 text-blue-600 hover:underline">
             ← Nazad na oglase
           </Link>
     </div>
   </div>
+</div>
+  {/* Historija pregleda oglasa */}
+<div className="mt-10 px-4 max-w-6xl mx-auto flex flex-col items-center justify-center">
+  <div className="flex gap-4 overflow-x-auto">
+    {JSON.parse(localStorage.getItem("pregledaniOglasi") || "[]")
+      .filter((o: Oglas) => o.id !== oglas.id) // izuzmi trenutno prikazani oglas
+      .map((oglas: Oglas) => (
+        <Link
+          href={`/oglas/${oglas.id}`}
+          key={oglas.id}
+          className="min-w-[150px] max-w-[200px] bg-white shadow rounded p-2 hover:shadow-lg transition"
+        >
+          <img
+            src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
+            alt={oglas.naslov}
+            className="w-full h-24 object-cover rounded mb-2"
+          />
+          <p className="text-sm font-medium">{oglas.naslov}</p>
+          <p className="text-xs text-gray-600">{oglas.cijena} BAM</p>
+        </Link>
+      ))}
+  </div>
+</div>
 </div>
   );
 }
