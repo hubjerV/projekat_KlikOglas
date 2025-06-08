@@ -77,6 +77,7 @@ def get_chat(
     return message_repository.get_chat_for_oglas(db, oglas_id, current_user.id)
 
 
+
 @router.get("/messages/unread-count", response_model=int)
 def get_unread_count(
     db: Session = Depends(get_session),
