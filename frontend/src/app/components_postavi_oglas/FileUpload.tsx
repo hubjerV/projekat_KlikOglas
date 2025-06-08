@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface FileUploadProps {
-  onUploadComplete: (uploadedUrls: string[]) => void;  // callback za URL-ove uploadovanih slika
+  onUploadComplete: (uploadedUrls: string[]) => void;  
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
@@ -27,7 +27,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       }
 
       const data = await response.json();
-      onUploadComplete(data.uploaded);  // prosledi URL-ove roditelju
+      onUploadComplete(data.uploaded);  
     } catch (error) {
       console.error(error);
       alert("Neuspešan upload slika.");
@@ -38,17 +38,28 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">Dodaj slike</label>
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={handleFileChange}
-        className="w-full"
-        disabled={uploading}
-      />
-      {uploading && <p>Učitavanje slika...</p>}
-    </div>
+  <label className="block text-sm font-medium text-white mb-1">Dodaj slike</label>
+
+  <label
+    htmlFor="file-upload"
+    className="inline-block cursor-pointer rounded bg-gray-700 px-4 py-2 text-white hover:bg-gray-600 transition"
+  >
+    Odaberi slike
+  </label>
+
+  <input
+    id="file-upload"
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={handleFileChange}
+    className="hidden"
+    disabled={uploading}
+  />
+
+  {uploading && <p className="text-white mt-2">Učitavanje slika...</p>}
+</div>
+
   );
 };
 
