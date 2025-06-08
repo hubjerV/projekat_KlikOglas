@@ -5,7 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 
 type User = {
   username: string;
-  email?: string; // Dodaj email kao opcioni
+  email?: string;
+  isAdmin?: boolean; // ✅ DODATO
 };
 
 type UserContextType = {
@@ -25,16 +26,17 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token'); 
+    const token = localStorage.getItem('access_token');
     console.log("Access token:", token); // test
 
     if (token) {
       try {
         const decoded: any = jwtDecode(token);
         console.log("Decoded token:", decoded);
-        setUser({ 
-          username: decoded.sub, 
-          email: decoded.email 
+        setUser({
+          username: decoded.sub,
+          email: decoded.email,
+          isAdmin: decoded.is_admin || false  // ✅ SETUJEMO isAdmin iz tokena
         });
       } catch (err) {
         setUser(null);

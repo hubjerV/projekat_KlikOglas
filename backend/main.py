@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 #from controllers.postavi_oglas import router as oglasi_router
 from controllers import postavi_oglas,oglas_controller,oglasi_detaljno
 from fastapi.staticfiles import StaticFiles
+from controllers import admin
+from models import admin_init
 
 app = FastAPI()
 
@@ -51,3 +53,14 @@ app.include_router(oglasi_detaljno.router)
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+
+
+app.include_router(admin.router, prefix="/auth")
+
+
+
+@app.on_event("startup")
+def on_startup():
+    SQLModel.metadata.create_all(engine)
+    import models.admin_init  # ✅ samo ovo je dovoljno jer kod unutar fajla automatski izvršava dodavanje admina

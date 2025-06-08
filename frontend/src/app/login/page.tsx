@@ -29,9 +29,18 @@ export default function LoginPage() {
       localStorage.setItem('access_token', data.access_token);
 
       const decoded: any = jwtDecode(data.access_token);
-      setUser({ username: decoded.sub, email: decoded.email }); 
+      setUser({
+        username: decoded.sub,
+        email: decoded.email,
+        isAdmin: decoded.is_admin,
+      });
 
-      router.push('/');
+      if (decoded.is_admin) {
+        router.push('/admin'); // ✅ Ispravno za admina
+      } else {
+        router.push('/');      // ✅ Početna za korisnika
+      }
+
       router.refresh();
     } else {
       setMessage('Neispravni podaci. Pokušajte ponovo.');
@@ -64,7 +73,6 @@ export default function LoginPage() {
           <button
             type="submit"
             className="w-full bg-white text-black py-2 rounded font-bold hover:bg-gray-400"
-           
           >
             Login
           </button>
