@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import InputField from './InputField';
-import TextAreaField from './TextAreaField';
 import FileUpload from './FileUpload';
-import SelectCategory from './SelectCategory';
 import SubmitButton from './SubmitButton';
+import SelectCategory from './SelectCategory';
 import axios from 'axios';
-import HeroIllustration from '../components/HeroIllustration';
-
 
 interface OglasResponse {
   message: string;
 }
+
+const TextAreaField: React.FC<{
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}> = ({ label, name, value, onChange }) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-white mb-1" htmlFor={name}>
+      {label}
+    </label>
+    <textarea
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full p-2 bg-transparent border border-gray-400 rounded text-white placeholder-gray-300"
+      rows={4}
+      required
+    />
+  </div>
+);
 
 const OglasForm: React.FC = () => {
   const [form, setForm] = useState({
@@ -48,9 +67,10 @@ const OglasForm: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-bold mb-4">Postavi novi oglas</h2>
+    <div className="bg-gray-900 w-full flex flex-col items-center justify-center">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-gray-800 p-6 rounded shadow-lg mx-4 my-8">
+        <h2 className="text-2xl font-bold mb-6 text-white">Postavi novi oglas</h2>
+
         <InputField label="Naslov" name="naslov" value={form.naslov} onChange={handleChange} />
         <TextAreaField label="Opis" name="opis" value={form.opis} onChange={handleChange} />
         <FileUpload onUploadComplete={(urls) => setSlikeUrls(urls)} />

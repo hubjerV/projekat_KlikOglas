@@ -7,22 +7,23 @@ interface SelectCategoryProps {
 
 const SelectCategory: React.FC<SelectCategoryProps> = ({ value, onChange }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">Kategorija</label>
+    <label className="block text-sm font-medium text-white mb-1" htmlFor="kategorija">
+      Kategorija
+    </label>
     <select
-      name="kategorija"            // <--- Dodaj ovo ovde
+      id="kategorija"
+      name="kategorija"
       value={value}
       onChange={onChange}
-      className="w-full border border-gray-300 rounded px-3 py-2"
-      required
+      className="w-full p-2 bg-gray-800 border border-gray-400 rounded text-white"
     >
-      <option value="">Odaberi kategoriju</option>
+      <option value="">Izaberite kategoriju</option>
       <option value="vozila">Vozila</option>
       <option value="nekretnine">Nekretnine</option>
       <option value="elektronika">Elektronika</option>
-      <option value="ostalo">Ostalo</option>
+      <option value="namestaj">Nameštaj</option>
     </select>
   </div>
 );
-
 
 export default SelectCategory;
