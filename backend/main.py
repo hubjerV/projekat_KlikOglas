@@ -6,21 +6,34 @@ from controllers import user
 from sqlmodel import SQLModel
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-#from controllers.postavi_oglas import router as oglasi_router
-from controllers import postavi_oglas,oglas_controller,oglasi_detaljno
+from controllers import postavi_oglas,oglas_controller,oglasi_detaljno,message_controller
 from fastapi.staticfiles import StaticFiles
+
+
+
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
-    #allow_origins=["http://localhost:3000"],
+    allow_origins=origins,  # precizno dozvoljen frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"], 
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 @app.on_event("startup")
 def on_startup():
@@ -48,6 +61,7 @@ app.include_router(postavi_oglas.router)
 app.include_router(oglas_controller.router, tags=["Oglasi"])
 
 app.include_router(oglasi_detaljno.router)
+app.include_router(message_controller.router, tags=["Poruke"])
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

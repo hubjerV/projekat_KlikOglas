@@ -9,6 +9,11 @@ from models.postavi_oglas_b import Oglas
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from typing import List
+from models.user import User  # Dodaj ako već nije
+from services.auth import get_current_user  # Ako već imaš, koristi to
+
+
+
 router = APIRouter()
 
 class OglasCreate(BaseModel):
@@ -20,8 +25,28 @@ class OglasCreate(BaseModel):
     kontakt: str
     kategorija: str
 
+# @router.post("/oglasi/")
+# def create_oglas(oglas: OglasCreate, session: Session = Depends(get_session)):
+#     novi_oglas = Oglas(
+#         naslov=oglas.naslov,
+#         opis=oglas.opis,
+#         slike=oglas.slike,
+#         cijena=oglas.cijena,
+#         lokacija=oglas.lokacija,
+#         kontakt=oglas.kontakt,
+#         kategorija=oglas.kategorija,
+#     )
+#     session.add(novi_oglas)
+#     session.commit()
+#     session.refresh(novi_oglas)
+#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
+
 @router.post("/oglasi/")
-def create_oglas(oglas: OglasCreate, session: Session = Depends(get_session)):
+def create_oglas(
+    oglas: OglasCreate,
+    session: Session = Depends(get_session),
+    user: User = Depends(get_current_user)  # Dodaj ovo da zna ko je prijavljen
+):
     novi_oglas = Oglas(
         naslov=oglas.naslov,
         opis=oglas.opis,
@@ -30,10 +55,12 @@ def create_oglas(oglas: OglasCreate, session: Session = Depends(get_session)):
         lokacija=oglas.lokacija,
         kontakt=oglas.kontakt,
         kategorija=oglas.kategorija,
+        id_korisnika=user.id  # AUTOMATSKI postavi ID korisnika
     )
     session.add(novi_oglas)
     session.commit()
     session.refresh(novi_oglas)
+
     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
 
 @router.get("/oglasi/", response_model=List[Oglas])
