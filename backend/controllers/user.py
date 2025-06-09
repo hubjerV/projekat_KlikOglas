@@ -8,6 +8,7 @@ from models.user import User
 from typing import List
 from sqlmodel import select
 from repositories.user import update_user
+from models.admin import Admin  # dodaj ovo
 
 
 
@@ -21,16 +22,33 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
     new_user = create_user(session, user, hashed_pw)
     return new_user
 
+
+
 @router.post("/login")
 def login(user: UserLogin, session: Session = Depends(get_session)):
+    # 1. Prvo probaj da pronađeš korisnika u User tabeli
     db_user = get_user_by_username(session, user.username)
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Neispravni podaci")
-    token = create_access_token({
-    "sub": db_user.username,
-    "email": db_user.email   
-})
-    return {"access_token": token, "token_type": "bearer"}
+    if db_user and verify_password(user.password, db_user.hashed_password):
+        token = create_access_token({
+            "sub": db_user.username,
+            "email": db_user.email,
+            "is_admin": False
+        })
+        return {"access_token": token, "token_type": "bearer"}
+
+    # 2. Ako nije User, probaj da pronađeš admina
+    admin = session.exec(select(Admin).where(Admin.username == user.username)).first()
+    if admin and verify_password(user.password, admin.hashed_password):
+        token = create_access_token({
+            "sub": admin.username,
+            "email": admin.email,
+            "is_admin": True
+        })
+        return {"access_token": token, "token_type": "bearer"}
+
+    # 3. Ako nijedno nije prošlo
+    raise HTTPException(status_code=401, detail="Neispravni podaci")
+
 
 
 @router.get("/users", response_model=List[UserRead])

@@ -69,10 +69,12 @@ export default function Navbar({ items }: NavbarProps) {
                 )}
               </DropdownWrapper>
 
-              <NavItemWrapper>
-                <Link href="/oglasi">Postavi oglas</Link>
-              </NavItemWrapper>
-
+              {/* ✅ Sakrij dugme ako je admin */}
+              {!user.isAdmin && (
+                <NavItemWrapper>
+                  <Link href="/oglasi">Postavi oglas</Link>
+                </NavItemWrapper>
+              )}
 
               <NavItemWrapper>
                 <LogoutButton
@@ -105,53 +107,56 @@ export default function Navbar({ items }: NavbarProps) {
           <HamburgerIcon aria-label="Toggle menu" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} />
         </HamburgerMenuWrapper>
         {isMobileMenuOpen && (
-        <MobileMenuBackdrop onClick={() => setMobileMenuOpen(false)}>
-          <MobileMenu onClick={(e) => e.stopPropagation()}>
-            {items.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="py-2 px-4 text-black hover:bg-gray-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.title}
-              </Link>
-            ))}
-            {user ? (
-              <>
-                <Link href="/profile" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
-                  Uredi profil
-                </Link>
-                <Link href="/oglasi" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
-                    Postavi oglas
-                </Link>
-
-                <button
-                  className="py-2 px-4 text-left"
-                  onClick={() => {
-                    localStorage.removeItem('access_token');
-                    setUser(null);
-                    setMobileMenuOpen(false);
-                    router.push('/');
-                  }}
+          <MobileMenuBackdrop onClick={() => setMobileMenuOpen(false)}>
+            <MobileMenu onClick={(e) => e.stopPropagation()}>
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="py-2 px-4 text-black hover:bg-gray-100"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
-                  Login
+                  {item.title}
                 </Link>
-                <Link href="/signup" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </MobileMenu>
-        </MobileMenuBackdrop>
-      )}
+              ))}
+              {user ? (
+                <>
+                  <Link href="/profile" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                    Uredi profil
+                  </Link>
 
+                  {/* ✅ Sakrij dugme ako je admin */}
+                  {!user.isAdmin && (
+                    <Link href="/oglasi" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                      Postavi oglas
+                    </Link>
+                  )}
+
+                  <button
+                    className="py-2 px-4 text-left"
+                    onClick={() => {
+                      localStorage.removeItem('access_token');
+                      setUser(null);
+                      setMobileMenuOpen(false);
+                      router.push('/');
+                    }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                    Login
+                  </Link>
+                  <Link href="/signup" className="py-2 px-4" onClick={() => setMobileMenuOpen(false)}>
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </MobileMenu>
+          </MobileMenuBackdrop>
+        )}
       </Content>
     </NavbarContainer>
   );
@@ -174,9 +179,13 @@ const NavbarContainer = styled.div`
   top: 0;
   z-index: 9999;
   width: 100%;
+<<<<<<< HEAD
+  background-color: #1a1a1a; 
+=======
 background-color: #ffffff;
 color: #171717;
 
+>>>>>>> origin/izmena-prikaza-oglasa
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 `;
 

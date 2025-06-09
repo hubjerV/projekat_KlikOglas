@@ -1,0 +1,35 @@
+[33m0528ae2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mspajanje[m[33m, [m[1;31morigin/spajanje[m[33m)[m Rešen konflikt u database.py
+[33m495e6f1[m Rešen konflikt u main.py
+[33m545ed2b[m[33m ([m[1;32mtest-provera[m[33m)[m Merge remote-tracking branch 'origin/izmena-prikaza-oglasa' into test-provera
+[33m5c945ca[m[33m ([m[1;31morigin/izmena-prikaza-oglasa[m[33m)[m Privremeni rad - pre testiranja moja-grana
+[33me2670ff[m Rešen konflikt - stilizacija dugmeta usklađena sa izmena-prikaza-oglasa
+[33mfe4503c[m Rešeni konflikti: spojeni admin i omiljeni/prijava oglasa
+[33m3339b60[m[33m ([m[1;32mizmena-prikaza-oglasa[m[33m)[m Broj pregleda i prikaz istorije
+[33m4bff6ae[m Merge remote-tracking branch 'origin/4-login-i-oglasi-spojeno' into spajanje
+[33mb4c27fd[m[33m ([m[1;32madmin-demo-verzija[m[33m)[m Ovo je probna verzija admin profila, koja treba da ima dodatne izmene u dizajnugit add .
+[33m6265ad4[m update
+[33m16b768d[m Povezivanje sa pojedinacnim oglasima
+[33me7d96ca[m Merge remote-tracking branch 'origin/moja-grana' into izmena-prikaza-oglasa
+[33mabdd645[m Merge branch '4-login-i-oglasi-spojeno' into izmena-prikaza-oglasa
+[33m9565b6b[m Detaljni oglasi
+[33m008b388[m[33m ([m[1;31morigin/4-login-i-oglasi-spojeno[m[33m, [m[1;32m4-login-i-oglasi-spojeno[m[33m)[m Izmene u dizajnu i dodate slike
+[33m9855a81[m Izmena prikaza oglasa i stilizacija kartica
+[33m484edea[m[33m ([m[1;31morigin/4-omiljeni-i-prijava-oglasa[m[33m)[m Omiljeni oglasi i prijava neodovarajuceg oglasa
+[33me6933a4[m Pretraga i filteri i prikaz oglasa na stranici
+[33m5c19eee[m Povezivanje 1 i 3 branch-a
+[33m66d235f[m Spojen branch 1 i 3
+[33mdc8aa7c[m[33m ([m[1;31morigin/3-postavljanje-oglasa[m[33m, [m[1;32m3-postavljanje-oglasa[m[33m)[m Dodala formu za postavljanje oglasa
+[33m21458c5[m Dodala formu za postavljanje oglasa
+[33mc0783a7[m[33m ([m[1;31morigin/1-login-i-registracija-korisnika[m[33m)[m uredjivanje profila
+[33md048b02[m Merge branch '1-login-i-registracija-korisnika' of https://github.com/hubjerV/projekat_KlikOglas into 3-postavljanje-oglasa
+[33ma382d25[m pocetna stranica
+[33m9fdbbe2[m Merge remote-tracking branch 'origin/1-login-i-registracija-korisnika' into 3-postavljanje-oglasa
+[33m8efb025[m login
+[33m95640f3[m Završeno spajanje grane add-db-connection
+[33m88e6fb2[m[33m ([m[1;31morigin/add-db-connection[m[33m)[m added database
+[33m056341b[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m popravljanje frontenda (typeScript)
+[33m59e2f82[m Update README.md
+[33mfa5012f[m database i requirements update
+[33mf7de748[m Merge branch 'main' of github.com:hubjerV/projekat_KlikOglas B
+[33mb627670[m Initial commit
+[33m1e83e6d[m Initial commit
