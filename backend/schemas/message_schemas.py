@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
+
 
 class MessageCreate(BaseModel):
     receiver_id: int
@@ -13,6 +15,7 @@ class MessageRead(BaseModel):
     oglas_id: int
     content: str
     timestamp: datetime
+    sender_username: Optional[str] = None
 
     class Config:
         orm_mode = True

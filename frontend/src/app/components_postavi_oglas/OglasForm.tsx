@@ -59,7 +59,19 @@ const OglasForm: React.FC = () => {
     };
 
     try {
-      const response = await axios.post<OglasResponse>('http://localhost:8000/oglasi/', dataToSend);
+      //const response = await axios.post<OglasResponse>('http://localhost:8000/oglasi/', dataToSend);
+      const token = localStorage.getItem("access_token");
+
+       const response = await axios.post<OglasResponse>(
+         'http://localhost:8000/oglasi/',
+         dataToSend,
+         {
+          headers: {
+          Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
       alert(response.data.message);
     } catch (error) {
       alert('Greška pri postavljanju oglasa');

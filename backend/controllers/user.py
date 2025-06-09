@@ -9,6 +9,8 @@ from typing import List
 from sqlmodel import select
 from repositories.user import update_user
 
+
+
 router = APIRouter()
 
 @router.post("/register", response_model=UserRead)
@@ -43,3 +45,5 @@ def update_profile(
 ):
     updated_user = update_user(session, current_user, update_data)
     return updated_user
+
+

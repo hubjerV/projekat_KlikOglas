@@ -16,6 +16,6 @@ class Oglas(SQLModel, table=True):
     kontakt: Optional[str] = Field(default=None)
     kategorija: str = Field(nullable=False)
     datum_postavljanja: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    id_korisnika: Optional[int] = Field(default=None, foreign_key="user.id")
     broj_pregleda: int = Field(default=0)
-
   
