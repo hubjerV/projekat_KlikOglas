@@ -476,11 +476,11 @@ export default function DetaljiOglasa() {
     </div>
   </div>
 </div>
-  {/* Historija pregleda oglasa */}
+
 <div className="mt-10 px-4 max-w-6xl mx-auto flex flex-col items-center justify-center">
   <div className="flex gap-4 overflow-x-auto">
     {JSON.parse(localStorage.getItem("pregledaniOglasi") || "[]")
-      .filter((o: Oglas) => o.id !== oglas.id) // izuzmi trenutno prikazani oglas
+      .filter((o: Oglas) => o.id !== oglas.id) 
       .map((oglas: Oglas) => (
         <Link
           href={`/oglas/${oglas.id}`}
