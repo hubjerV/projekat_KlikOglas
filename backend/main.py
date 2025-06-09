@@ -69,19 +69,14 @@ app.include_router(message_controller.router, tags=["Poruke"])
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-<<<<<<< HEAD
-
-
 app.include_router(admin.router, prefix="/auth")
 
-
+# omiljeni i prijava oglasa
+app.include_router(favorite_controller.router)
+app.include_router(report_controller.router)
 
 @app.on_event("startup")
 def on_startup():
     SQLModel.metadata.create_all(engine)
-    import models.admin_init  # ✅ samo ovo je dovoljno jer kod unutar fajla automatski izvršava dodavanje admina
-=======
-# omiljeni i prijava oglasa
-app.include_router(favorite_controller.router)
-app.include_router(report_controller.router)
->>>>>>> origin/4-omiljeni-i-prijava-oglasa
+    import models.admin_init
+origin/4-omiljeni-i-prijava-oglasa
