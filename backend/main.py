@@ -28,8 +28,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
-    SQLModel.metadata.create_all(engine)
+    from models.admin import Admin
     import models.admin_init
+    SQLModel.metadata.create_all(engine)
 
 @app.get("/")
 def read_root():
