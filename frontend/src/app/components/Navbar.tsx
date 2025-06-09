@@ -179,13 +179,12 @@ const NavbarContainer = styled.div`
   top: 0;
   z-index: 9999;
   width: 100%;
-<<<<<<< HEAD
-  background-color: #1a1a1a; 
-=======
+
+
 background-color: #ffffff;
 color: #171717;
 
->>>>>>> origin/izmena-prikaza-oglasa
+
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 `;
 
