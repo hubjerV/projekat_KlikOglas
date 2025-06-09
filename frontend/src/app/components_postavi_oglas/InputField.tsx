@@ -11,19 +11,23 @@ interface InputFieldProps {
 
 const InputField: React.FC<InputFieldProps> = ({ label, name, value, onChange, type = 'text' }) => (
   <div className="mb-4">
-    <label className="block text-sm font-medium text-white mb-1" htmlFor={name}>
+    
+      <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor={name}>
       {label}
     </label>
+
+    {/* Input ima belu pozadinu, crn tekst, sivi border */}
     <input
       id={name}
       name={name}
       type={type}
       value={value}
       onChange={onChange}
-      className="w-full p-2 bg-transparent border border-gray-400 rounded text-white placeholder-gray-300"
+      className="w-full p-2 bg-white border border-gray-400 rounded text-black placeholder-gray-500"
       required
     />
   </div>
 );
+
 
 export default InputField;

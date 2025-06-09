@@ -36,9 +36,7 @@ export default function RootLayout({
               <NewsletterModalContextProvider>
                 <Navbar
                   items={[
-                    { href: "/oglasi_prikaz", title: "Shop" },
-                    { href: "/about", title: "About" },
-                    { href: "/contact", title: "Contact", outlined: true },
+                    { href: "/oglasi_prikaz", title: "Shop" }
                   ]}
                 />
                 {children}
