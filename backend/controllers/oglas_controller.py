@@ -11,12 +11,13 @@
 # def get_all_oglasi(db: Session = Depends(get_session)):
 #     return db.query(Oglas).all()
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from database import get_session
 from models.postavi_oglas_b import Oglas
 from datetime import datetime
+from services.auth import get_current_user
 
 router = APIRouter()
 
@@ -50,3 +51,25 @@ def get_filtered_oglasi(
             pass  # ignorisati ako nije validan datum
 
     return query.all()
+
+
+@router.delete("/oglasi/{oglas_id}")
+def obrisi_oglas(
+    oglas_id: int,
+    db: Session = Depends(get_session),
+    current_user=Depends(get_current_user)
+):
+    print(f"[DEBUG] Pokušaj brisanja oglasa ID: {oglas_id}")
+
+    if not getattr(current_user, "is_admin", False):
+        raise HTTPException(status_code=403, detail="Samo admin može da briše oglase")
+
+    oglas = db.query(Oglas).filter(Oglas.id == oglas_id).first()
+    if not oglas:
+        raise HTTPException(status_code=404, detail="Oglas nije pronađen")
+
+    db.delete(oglas)
+    db.commit()
+
+    return {"message": "Oglas je uspešno obrisan"}
+

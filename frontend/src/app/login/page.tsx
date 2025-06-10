@@ -36,9 +36,9 @@ setUser({
 });
 
 if (decoded.is_admin) {
-  router.push('/admin'); // Admin ide na admin panel
+  router.push('/admin'); 
 } else {
-  router.push('/');      // Korisnik ide na početnu
+  router.push('/');      
 }
 
       router.refresh();

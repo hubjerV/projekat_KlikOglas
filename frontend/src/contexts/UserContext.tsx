@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 type User = {
   username: string;
   email?: string;
-  isAdmin?: boolean; // ✅ DODATO
+  isAdmin?: boolean; 
 };
 
 type UserContextType = {
@@ -36,7 +36,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setUser({
           username: decoded.sub,
           email: decoded.email,
-          isAdmin: decoded.is_admin || false  // ✅ SETUJEMO isAdmin iz tokena
+          isAdmin: decoded.is_admin || false  
         });
       } catch (err) {
         setUser(null);

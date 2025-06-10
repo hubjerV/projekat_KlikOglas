@@ -6,7 +6,6 @@ from models.admin import Admin
 
 router = APIRouter()
 
-# Već postoji:
 @router.post("/admin/login")
 def admin_login(data: dict, session: Session = Depends(get_session)):
     username = data.get("username")
@@ -17,11 +16,11 @@ def admin_login(data: dict, session: Session = Depends(get_session)):
     if not admin or not verify_password(password, admin.hashed_password):
         raise HTTPException(status_code=401, detail="Neispravni admin podaci")
 
-    token = create_access_token({
-        "sub": admin.username,
-        "email": admin.email,
-        "is_admin": True
-    })
+    token = create_access_token(
+    {"sub": admin.username, "email": admin.email},
+    is_admin=True
+)
+
 
     return {"access_token": token, "token_type": "bearer"}
 

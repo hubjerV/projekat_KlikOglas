@@ -323,6 +323,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useUser } from '@/contexts/UserContext';
+
 
 interface Oglas {
   id: number;
@@ -352,6 +354,8 @@ export default function DetaljiOglasa() {
   const [oglas, setOglas] = useState<Oglas | null>(null);
   const [poruke, setPoruke] = useState<Message[]>([]);
   const [novaPoruka, setNovaPoruka] = useState('');
+  const { user } = useUser();
+
 
   useEffect(() => {
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -361,7 +365,7 @@ export default function DetaljiOglasa() {
       .then((res) => res.json())
       .then((data) => {
             setOglas(data);
-            dodajUHistoriju(data); // ← Ovdje je sada ispravno
+            dodajUHistoriju(data); 
           })
       .catch((err) => console.error('Greška pri dohvaćanju oglasa:', err));
 
@@ -423,6 +427,30 @@ export default function DetaljiOglasa() {
       });
   }
 
+      const obrisiOglas = async (): Promise<void> => {
+        if (!oglas) return;
+
+        const potvrda = confirm("Da li sigurno želiš da obrišeš ovaj oglas?");
+        if (!potvrda) return;
+
+        const token = localStorage.getItem("access_token");
+
+        const res = await fetch(`http://localhost:8000/oglasi/${oglas.id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (res.ok) {
+          alert("Oglas je uspešno obrisan!");
+          window.location.href = "/oglasi_prikaz";
+        } else {
+          const data = await res.json();
+          alert("Greška: " + data.detail);
+        }
+      };
+
   if (!oglas) return <p className="p-8">Učitavanje detalja oglasa...</p>;
 
   return (
@@ -473,6 +501,16 @@ export default function DetaljiOglasa() {
           <Link href="/oglasi_prikaz" className="block mt-6 text-blue-600 hover:underline">
             ← Nazad na oglase
           </Link>
+
+          {user?.isAdmin && (
+              <button
+                onClick={obrisiOglas}
+                className="mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded font-semibold"
+              >
+                🗑️ Obriši oglas
+              </button>
+            )}
+
     </div>
   </div>
 </div>

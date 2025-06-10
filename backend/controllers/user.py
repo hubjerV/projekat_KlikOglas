@@ -29,21 +29,19 @@ def login(user: UserLogin, session: Session = Depends(get_session)):
     # 1. Prvo probaj da pronađeš korisnika u User tabeli
     db_user = get_user_by_username(session, user.username)
     if db_user and verify_password(user.password, db_user.hashed_password):
-        token = create_access_token({
-            "sub": db_user.username,
-            "email": db_user.email,
-            "is_admin": False
-        })
+        token = create_access_token(
+        {"sub": db_user.username, "email": db_user.email},
+        is_admin=False)
+
         return {"access_token": token, "token_type": "bearer"}
 
-    # 2. Ako nije User, probaj da pronađeš admina
     admin = session.exec(select(Admin).where(Admin.username == user.username)).first()
     if admin and verify_password(user.password, admin.hashed_password):
-        token = create_access_token({
-            "sub": admin.username,
-            "email": admin.email,
-            "is_admin": True
-        })
+        token = create_access_token(
+            {"sub": admin.username, "email": admin.email},
+            is_admin=True
+)
+
         return {"access_token": token, "token_type": "bearer"}
 
     # 3. Ako nijedno nije prošlo
