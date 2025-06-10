@@ -354,6 +354,7 @@ export default function DetaljiOglasa() {
   const [oglas, setOglas] = useState<Oglas | null>(null);
   const [poruke, setPoruke] = useState<Message[]>([]);
   const [novaPoruka, setNovaPoruka] = useState('');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { user } = useUser();
 
 
@@ -462,9 +463,9 @@ export default function DetaljiOglasa() {
     <div className="oglas-levo flex flex-col gap-4 w-full md:w-1/2">
       <div className="oglas-slika bg-[#f0f0f0] flex justify-center items-center rounded">
         <img
-          src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-          alt="Slika oglasa"
-          className="w-full h-auto object-contain max-h-[400px]"
+          src={`http://localhost:8000${encodeURI(oglas.slike[selectedImageIndex])}`}
+          alt={`Slika ${selectedImageIndex + 1}`}
+          className="w-full h-auto object-contain max-h-[400px] transition duration-300 ease-in-out"
         />
       </div>
 
@@ -474,8 +475,12 @@ export default function DetaljiOglasa() {
             key={index}
             src={`http://localhost:8000${encodeURI(slika)}`}
             alt={`Slika ${index + 1}`}
-            className="w-20 h-20 object-cover rounded border"
+            className={`w-20 h-20 object-cover rounded border cursor-pointer ${
+              selectedImageIndex === index ? 'border-4 border-blue-500' : 'border'
+            }`}
+            onClick={() => setSelectedImageIndex(index)}
           />
+
         ))}
       </div>
     </div>

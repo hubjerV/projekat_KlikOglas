@@ -40,17 +40,18 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     session: Session = Depends(get_session)
 ):
-    from repositories.user import get_user_by_username
-    from repositories.admin import get_admin_by_username
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         email: str = payload.get("email")
-        is_admin = payload.get("is_admin", False)
-        if username is None or email is None:
+        is_admin: bool = payload.get("is_admin", False)
+        id = payload.get("id")
+    
+        if not username or not email:
             raise HTTPException(status_code=401, detail="Nevažeći token")
+
+        return UserInfo(username=username, email=email, is_admin=is_admin, id= id)
+
     except JWTError:
         raise HTTPException(status_code=401, detail="Nevažeći token")
 
-    return UserInfo(username=username, email=email, is_admin=is_admin)

@@ -17,7 +17,7 @@ def admin_login(data: dict, session: Session = Depends(get_session)):
         raise HTTPException(status_code=401, detail="Neispravni admin podaci")
 
     token = create_access_token(
-    {"sub": admin.username, "email": admin.email},
+    {"sub": admin.username, "email": admin.email, "id": admin.id},
     is_admin=True
 )
 

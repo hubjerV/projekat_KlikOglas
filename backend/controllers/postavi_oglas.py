@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from models.user import User  # Dodaj ako već nije
 from services.auth import get_current_user  # Ako već imaš, koristi to
+from fastapi import Form
 
 
 
@@ -41,27 +42,72 @@ class OglasCreate(BaseModel):
 #     session.refresh(novi_oglas)
 #     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
 
-@router.post("/oglasi/")
-def create_oglas(
-    oglas: OglasCreate,
+# @router.post("/oglasi/")
+# def create_oglas(
+#     oglas: OglasCreate,
+#     session: Session = Depends(get_session),
+#     user: User = Depends(get_current_user)  # Dodaj ovo da zna ko je prijavljen
+# ):
+#     novi_oglas = Oglas(
+#         naslov=oglas.naslov,
+#         opis=oglas.opis,
+#         slike=oglas.slike,
+#         cijena=oglas.cijena,
+#         lokacija=oglas.lokacija,
+#         kontakt=oglas.kontakt,
+#         kategorija=oglas.kategorija,
+#         id_korisnika=user.id  # AUTOMATSKI postavi ID korisnika
+#     )
+#     session.add(novi_oglas)
+#     session.commit()
+#     session.refresh(novi_oglas)
+
+#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
+
+from fastapi import Form
+
+UPLOAD_DIR = "uploads"
+
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+@router.post("/oglasi-novi/")
+async def create_oglas_novi(
+    naslov: str = Form(...),
+    opis: str = Form(...),
+    cijena: Decimal = Form(...),
+    lokacija: str = Form(...),
+    kontakt: str = Form(...),
+    kategorija: str = Form(...),
+    slike: List[UploadFile] = File(...),
     session: Session = Depends(get_session),
-    user: User = Depends(get_current_user)  # Dodaj ovo da zna ko je prijavljen
+    user: User = Depends(get_current_user)
 ):
+    slike_putanje = []
+
+    for file in slike:
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        slike_putanje.append(f"/{UPLOAD_DIR}/{file.filename}")
+
     novi_oglas = Oglas(
-        naslov=oglas.naslov,
-        opis=oglas.opis,
-        slike=oglas.slike,
-        cijena=oglas.cijena,
-        lokacija=oglas.lokacija,
-        kontakt=oglas.kontakt,
-        kategorija=oglas.kategorija,
-        id_korisnika=user.id  # AUTOMATSKI postavi ID korisnika
+        naslov=naslov,
+        opis=opis,
+        slike=slike_putanje,
+        cijena=cijena,
+        lokacija=lokacija,
+        kontakt=kontakt,
+        kategorija=kategorija,
+        id_korisnika=user.id
     )
+
     session.add(novi_oglas)
     session.commit()
     session.refresh(novi_oglas)
 
-    return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
+    return {"id": novi_oglas.id, "message": "Oglas sa slikama je uspešno postavljen"}
+
+
 
 @router.get("/oglasi/", response_model=List[Oglas])
 def read_oglasi(session: Session = Depends(get_session)):
@@ -70,21 +116,16 @@ def read_oglasi(session: Session = Depends(get_session)):
 
 
 
-UPLOAD_DIR = "uploads"
-
-# Napravi folder ako ne postoji
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-@router.post("/upload_slika/")
-async def upload_slike(files: List[UploadFile] = File(...)):
-    saved_files = []
-    for file in files:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        try:
-            with open(file_path, "wb") as f:
-                content = await file.read()
-                f.write(content)
-            saved_files.append(f"/{UPLOAD_DIR}/{file.filename}")  # putanja za frontend (možeš prilagoditi)
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Greška pri čuvanju slike: {str(e)}")
-    return JSONResponse(content={"uploaded": saved_files})
+# @router.post("/upload_slika/")
+# async def upload_slike(files: List[UploadFile] = File(...)):
+#     saved_files = []
+#     for file in files:
+#         file_path = os.path.join(UPLOAD_DIR, file.filename)
+#         try:
+#             with open(file_path, "wb") as f:
+#                 content = await file.read()
+#                 f.write(content)
+#             saved_files.append(f"/{UPLOAD_DIR}/{file.filename}")  # putanja za frontend (možeš prilagoditi)
+#         except Exception as e:
+#             raise HTTPException(status_code=500, detail=f"Greška pri čuvanju slike: {str(e)}")
+#     return JSONResponse(content={"uploaded": saved_files})

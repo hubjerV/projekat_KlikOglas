@@ -1,14 +1,33 @@
 import React, { useState } from 'react';
-import InputField from './InputField';
-import FileUpload from './FileUpload';
-import SubmitButton from './SubmitButton';
-import SelectCategory from './SelectCategory';
 import axios from 'axios';
 import HeroIllustration from '../components/HeroIllustration';
 
 interface OglasResponse {
   message: string;
 }
+
+const InputField: React.FC<{
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  type?: string;
+}> = ({ label, name, value, onChange, type = "text" }) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor={name}>
+      {label}
+    </label>
+    <input
+      type={type}
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
+      required
+    />
+  </div>
+);
 
 const TextAreaField: React.FC<{
   label: string;
@@ -25,10 +44,32 @@ const TextAreaField: React.FC<{
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800 placeholder-gray-400"
+      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
       rows={4}
       required
     />
+  </div>
+);
+
+const SelectCategory: React.FC<{
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}> = ({ value, onChange }) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">Kategorija</label>
+    <select
+      name="kategorija"
+      value={value}
+      onChange={onChange}
+      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
+      required
+    >
+      <option value="">-- Odaberi kategoriju --</option>
+      <option value="Tehnika">Tehnika</option>
+      <option value="Nekretnine">Nekretnine</option>
+      <option value="Automobili">Automobili</option>
+      <option value="Ostalo">Ostalo</option>
+    </select>
   </div>
 );
 
@@ -42,7 +83,7 @@ const OglasForm: React.FC = () => {
     kategorija: '',
   });
 
-  const [slikeUrls, setSlikeUrls] = useState<string[]>([]);
+  const [slike, setSlike] = useState<FileList | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -53,29 +94,36 @@ const OglasForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const dataToSend = {
-      ...form,
-      slike: slikeUrls,
-    };
+    const formData = new FormData();
+    formData.append("naslov", form.naslov);
+    formData.append("opis", form.opis);
+    formData.append("cijena", form.cijena);
+    formData.append("lokacija", form.lokacija);
+    formData.append("kontakt", form.kontakt);
+    formData.append("kategorija", form.kategorija);
+
+    if (slike) {
+      Array.from(slike).forEach((file) => {
+        formData.append("slike", file); // backend očekuje List[UploadFile]
+      });
+    }
 
     try {
-      //const response = await axios.post<OglasResponse>('http://localhost:8000/oglasi/', dataToSend);
       const token = localStorage.getItem("access_token");
-
-       const response = await axios.post<OglasResponse>(
-         'http://localhost:8000/oglasi/',
-         dataToSend,
-         {
+      const response = await axios.post<OglasResponse>(
+        "http://localhost:8000/oglasi-novi/",
+        formData,
+        {
           headers: {
-          Authorization: `Bearer ${token}`,
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-
       alert(response.data.message);
     } catch (error) {
-      alert('Greška pri postavljanju oglasa');
       console.error(error);
+      alert("Greška pri postavljanju oglasa");
     }
   };
 
@@ -94,12 +142,30 @@ const OglasForm: React.FC = () => {
 
           <InputField label="Naslov" name="naslov" value={form.naslov} onChange={handleChange} />
           <TextAreaField label="Opis" name="opis" value={form.opis} onChange={handleChange} />
-          <FileUpload onUploadComplete={(urls) => setSlikeUrls(urls)} />
+
+          {/* Input za slike */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Dodaj slike</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => setSlike(e.target.files)}
+              className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
+            />
+          </div>
+
           <InputField label="Cijena" name="cijena" value={form.cijena} onChange={handleChange} type="number" />
           <InputField label="Lokacija" name="lokacija" value={form.lokacija} onChange={handleChange} />
           <InputField label="Kontakt" name="kontakt" value={form.kontakt} onChange={handleChange} />
           <SelectCategory value={form.kategorija} onChange={handleChange} />
-          <SubmitButton />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Postavi oglas
+          </button>
         </form>
       </div>
     </div>

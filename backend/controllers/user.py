@@ -26,11 +26,10 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
 
 @router.post("/login")
 def login(user: UserLogin, session: Session = Depends(get_session)):
-    # 1. Prvo probaj da pronađeš korisnika u User tabeli
     db_user = get_user_by_username(session, user.username)
     if db_user and verify_password(user.password, db_user.hashed_password):
         token = create_access_token(
-        {"sub": db_user.username, "email": db_user.email},
+        {"sub": db_user.username, "email": db_user.email, "id": db_user.id},
         is_admin=False)
 
         return {"access_token": token, "token_type": "bearer"}
@@ -38,7 +37,7 @@ def login(user: UserLogin, session: Session = Depends(get_session)):
     admin = session.exec(select(Admin).where(Admin.username == user.username)).first()
     if admin and verify_password(user.password, admin.hashed_password):
         token = create_access_token(
-            {"sub": admin.username, "email": admin.email},
+            {"sub": admin.username, "email": admin.email, "id": admin.id},
             is_admin=True
 )
 
