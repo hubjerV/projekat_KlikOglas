@@ -4,13 +4,14 @@ from sqlmodel import Session, select
 from typing import List
 from pydantic import BaseModel
 from decimal import Decimal
+from services.email_service import send_confirmation_email
 from database import get_session
 from models.postavi_oglas_b import Oglas
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from typing import List
-from models.user import User  # Dodaj ako već nije
-from services.auth import get_current_user  # Ako već imaš, koristi to
+from models.user import User 
+from services.auth import get_current_user  
 from fastapi import Form
 
 
@@ -26,45 +27,7 @@ class OglasCreate(BaseModel):
     kontakt: str
     kategorija: str
 
-# @router.post("/oglasi/")
-# def create_oglas(oglas: OglasCreate, session: Session = Depends(get_session)):
-#     novi_oglas = Oglas(
-#         naslov=oglas.naslov,
-#         opis=oglas.opis,
-#         slike=oglas.slike,
-#         cijena=oglas.cijena,
-#         lokacija=oglas.lokacija,
-#         kontakt=oglas.kontakt,
-#         kategorija=oglas.kategorija,
-#     )
-#     session.add(novi_oglas)
-#     session.commit()
-#     session.refresh(novi_oglas)
-#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
 
-# @router.post("/oglasi/")
-# def create_oglas(
-#     oglas: OglasCreate,
-#     session: Session = Depends(get_session),
-#     user: User = Depends(get_current_user)  # Dodaj ovo da zna ko je prijavljen
-# ):
-#     novi_oglas = Oglas(
-#         naslov=oglas.naslov,
-#         opis=oglas.opis,
-#         slike=oglas.slike,
-#         cijena=oglas.cijena,
-#         lokacija=oglas.lokacija,
-#         kontakt=oglas.kontakt,
-#         kategorija=oglas.kategorija,
-#         id_korisnika=user.id  # AUTOMATSKI postavi ID korisnika
-#     )
-#     session.add(novi_oglas)
-#     session.commit()
-#     session.refresh(novi_oglas)
-
-#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
-
-from fastapi import Form
 
 UPLOAD_DIR = "uploads"
 
@@ -104,6 +67,8 @@ async def create_oglas_novi(
     session.add(novi_oglas)
     session.commit()
     session.refresh(novi_oglas)
+    send_confirmation_email(to_email=user.email, username=user.username)
+
 
     return {"id": novi_oglas.id, "message": "Oglas sa slikama je uspešno postavljen"}
 
@@ -129,3 +94,40 @@ def read_oglasi(session: Session = Depends(get_session)):
 #         except Exception as e:
 #             raise HTTPException(status_code=500, detail=f"Greška pri čuvanju slike: {str(e)}")
 #     return JSONResponse(content={"uploaded": saved_files})
+# @router.post("/oglasi/")
+# def create_oglas(oglas: OglasCreate, session: Session = Depends(get_session)):
+#     novi_oglas = Oglas(
+#         naslov=oglas.naslov,
+#         opis=oglas.opis,
+#         slike=oglas.slike,
+#         cijena=oglas.cijena,
+#         lokacija=oglas.lokacija,
+#         kontakt=oglas.kontakt,
+#         kategorija=oglas.kategorija,
+#     )
+#     session.add(novi_oglas)
+#     session.commit()
+#     session.refresh(novi_oglas)
+#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
+
+# @router.post("/oglasi/")
+# def create_oglas(
+#     oglas: OglasCreate,
+#     session: Session = Depends(get_session),
+#     user: User = Depends(get_current_user)  # Dodaj ovo da zna ko je prijavljen
+# ):
+#     novi_oglas = Oglas(
+#         naslov=oglas.naslov,
+#         opis=oglas.opis,
+#         slike=oglas.slike,
+#         cijena=oglas.cijena,
+#         lokacija=oglas.lokacija,
+#         kontakt=oglas.kontakt,
+#         kategorija=oglas.kategorija,
+#         id_korisnika=user.id  # AUTOMATSKI postavi ID korisnika
+#     )
+#     session.add(novi_oglas)
+#     session.commit()
+#     session.refresh(novi_oglas)
+
+#     return {"id": novi_oglas.id, "message": "Oglas uspješno postavljen"}
