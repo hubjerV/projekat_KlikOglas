@@ -7,6 +7,8 @@ import HeroIllustration from '../../app/components/HeroIllustration';
 import OverTitle from '../../app/components/OverTitle';
 import { useNewsletterModalContext } from 'contexts/newsletter-modal.context';
 import { media } from 'utils/media';
+import ChatBot from '@/app/components/ChatBot';
+
 
 export default function Hero() {
   const { setIsModalOpened } = useNewsletterModalContext();
@@ -16,16 +18,14 @@ export default function Hero() {
       <Contents>
         <CustomOverTitle>Pronađi. Objavi. Prodaj.</CustomOverTitle>
         <Heading>FindIt</Heading>
-        <CustomButtonGroup>
-          <Button onClick={() => setIsModalOpened(true)}>
-            AI Chat <span>&rarr;</span>
-          </Button>
-        </CustomButtonGroup>
+        
       </Contents>
       <ImageContainer>
         <HeroIllustration />
       </ImageContainer>
+      <ChatBot />
     </HeroWrapper>
+    
   );
 }
 
