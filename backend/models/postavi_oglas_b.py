@@ -1,10 +1,8 @@
-from typing import Optional
-from sqlmodel import SQLModel, Field
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
-from sqlalchemy import Column, Numeric
+from sqlalchemy import Column, Numeric, JSON
 from decimal import Decimal
-from sqlalchemy import JSON
-from typing import List
 
 class Oglas(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -18,4 +16,5 @@ class Oglas(SQLModel, table=True):
     datum_postavljanja: Optional[datetime] = Field(default_factory=datetime.utcnow)
     id_korisnika: Optional[int] = Field(default=None, foreign_key="user.id")
     broj_pregleda: int = Field(default=0)
-  
+
+    omiljeni: List["Omiljeni"] = Relationship(back_populates="oglas")

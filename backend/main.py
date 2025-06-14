@@ -7,6 +7,8 @@ from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from controllers import user_public
+from controllers import omiljeni
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -50,15 +52,18 @@ def test_db(session = Depends(get_session)):
         return {"status": "ERROR", "message": str(e)}
 
 
-app.include_router(user.router, prefix="/auth", tags=["Auth"])
+#app.include_router(user.router, prefix="/auth", tags=["Auth"])
+app.include_router(user.router)
 app.include_router(postavi_oglas.router)
 app.include_router(oglas_controller.router, tags=["Oglasi"])
 app.include_router(oglasi_detaljno.router)
 app.include_router(message_controller.router, tags=["Poruke"])
+app.include_router(omiljeni.omiljeni_router)
 
 app.include_router(user_public.router, prefix="/public", tags=["User Public"])
 
 app.include_router(admin.router, prefix="/auth")
+
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

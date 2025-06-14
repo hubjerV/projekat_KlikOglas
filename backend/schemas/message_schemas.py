@@ -18,4 +18,4 @@ class MessageRead(BaseModel):
     sender_username: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

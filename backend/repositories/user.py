@@ -4,9 +4,13 @@ from schemas.user import UserCreate, UserUpdate
 from services.auth import hash_password
 
 
+def get_user_by_id(session: Session, user_id: int) -> User | None:
+    return session.exec(select(User).where(User.id == user_id)).first()
+
 def get_user_by_username(session: Session, username: str):
     statement = select(User).where(User.username == username)
     return session.exec(statement).first()
+
 
 def create_user(session: Session, user_create: UserCreate, hashed_password: str):
     user = User(

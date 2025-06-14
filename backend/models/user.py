@@ -6,4 +6,5 @@ class User(SQLModel, table=True):
     username: str = Field(index=True, unique=True)
     email: str = Field(unique=True)
     hashed_password: str
+    is_admin: bool = False 
     

@@ -1,49 +1,49 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import HeroIllustration from '../components/HeroIllustration';
-import { useUser } from '@/contexts/UserContext';
-import { jwtDecode } from 'jwt-decode';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import HeroIllustration from "../components/HeroIllustration";
+import { useUser } from "@/contexts/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const { setUser } = useUser();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:8000/auth/login', {
-      method: 'POST',
+    const res = await fetch("http://localhost:8000/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
     });
 
     if (res.ok) {
       const data = await res.json();
-      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem("access_token", data.access_token);
 
       const decoded: any = jwtDecode(data.access_token);
-setUser({
-  username: decoded.sub,
-  email: decoded.email,
-  isAdmin: decoded.is_admin,
-});
+      setUser({
+        username: decoded.sub,
+        email: decoded.email,
+        isAdmin: decoded.is_admin,
+      });
 
-if (decoded.is_admin) {
-  router.push('/admin'); // Admin ide na admin panel
-} else {
-  router.push('/');      // Korisnik ide na početnu
-}
+      if (decoded.is_admin) {
+        router.push("/admin"); // Admin ide na admin panel
+      } else {
+        router.push("/"); // Korisnik ide na početnu
+      }
 
       router.refresh();
     } else {
-      setMessage('Neispravni podaci. Pokušajte ponovo.');
+      setMessage("Neispravni podaci. Pokušajte ponovo.");
     }
   }
 
@@ -73,7 +73,6 @@ if (decoded.is_admin) {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition"
-
           >
             Login
           </button>
