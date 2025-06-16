@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 type User = {
+  id:number;
   username: string;
   email?: string;
   isAdmin?: boolean; 
@@ -34,6 +35,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         const decoded: any = jwtDecode(token);
         console.log("Decoded token:", decoded);
         setUser({
+          id: decoded.id,  
           username: decoded.sub,
           email: decoded.email,
           isAdmin: decoded.is_admin || false  

@@ -31,3 +31,7 @@ def admin_dashboard(current_user=Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Nemaš pristup")
 
     return {"message": f"Zdravo, admin {current_user.username}!"}
+
+
+
+

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import HeroIllustration from '../components/HeroIllustration';
+import { useEffect} from 'react';
 
 interface OglasResponse {
   message: string;
@@ -51,27 +52,63 @@ const TextAreaField: React.FC<{
   </div>
 );
 
+// const SelectCategory: React.FC<{
+//   value: string;
+//   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+// }> = ({ value, onChange }) => (
+//   <div className="mb-4">
+//     <label className="block text-sm font-medium text-gray-700 mb-1">Kategorija</label>
+//     <select
+//       name="kategorija"
+//       value={value}
+//       onChange={onChange}
+//       className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
+//       required
+//     >
+//       <option value="">-- Odaberi kategoriju --</option>
+//       <option value="Tehnika">Tehnika</option>
+//       <option value="Nekretnine">Nekretnine</option>
+//       <option value="Automobili">Automobili</option>
+//       <option value="Ostalo">Ostalo</option>
+//     </select>
+//   </div>
+// );
 const SelectCategory: React.FC<{
   value: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}> = ({ value, onChange }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">Kategorija</label>
-    <select
-      name="kategorija"
-      value={value}
-      onChange={onChange}
-      className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
-      required
-    >
-      <option value="">-- Odaberi kategoriju --</option>
-      <option value="Tehnika">Tehnika</option>
-      <option value="Nekretnine">Nekretnine</option>
-      <option value="Automobili">Automobili</option>
-      <option value="Ostalo">Ostalo</option>
-    </select>
-  </div>
-);
+}> = ({ value, onChange }) => {
+  const [kategorije, setKategorije] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchKategorije = async () => {
+      const res = await fetch("http://localhost:8000/admin/users/kategorije");
+      const data = await res.json();
+      setKategorije(data.map((k: any) => k.naziv));
+    };
+    fetchKategorije();
+  }, []);
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Kategorija</label>
+      <select
+        name="kategorija"
+        value={value}
+        onChange={onChange}
+        className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800"
+        required
+      >
+        <option value="">-- Odaberi kategoriju --</option>
+        {kategorije.map((kat) => (
+          <option key={kat} value={kat}>
+            {kat}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 
 const OglasForm: React.FC = () => {
   const [form, setForm] = useState({

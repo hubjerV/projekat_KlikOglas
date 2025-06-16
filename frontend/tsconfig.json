@@ -23,6 +23,7 @@
   "components/*": ["./src/components/*"],
   "contexts/*": ["./src/contexts/*"],
   "utils/*": ["./src/utils/*"]
+  
 }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

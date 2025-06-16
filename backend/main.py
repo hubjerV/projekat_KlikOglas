@@ -6,14 +6,12 @@ from sqlmodel import SQLModel
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from controllers import user_public
-
-
-
+from controllers import user_public,admin_users
 from controllers import user
 from controllers import postavi_oglas, oglas_controller, oglasi_detaljno, message_controller
 from controllers import admin
 from models import admin_init
+from controllers import admin_stats_router
 
 
 app = FastAPI()
@@ -60,6 +58,11 @@ app.include_router(user_public.router, prefix="/public", tags=["User Public"])
 
 app.include_router(admin.router, prefix="/auth")
 
+app.include_router(admin_users.admin_router)
+
+
+app.include_router(admin_stats_router.router)
+
+
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
