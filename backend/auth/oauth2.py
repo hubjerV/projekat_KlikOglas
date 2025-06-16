@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
@@ -59,4 +59,10 @@ def get_current_user(
     user = get_user_by_id(session, int(user_id))
     if user is None:
         raise HTTPException(status_code=404, detail="Korisnik ne postoji")
+    return user
+
+
+def get_current_admin(user: User = Depends(get_current_user)) -> User:
+    if not user.is_admin:
+        raise HTTPException(status_code=403, detail="Samo admini mogu pristupiti.")
     return user

@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from controllers import user_public
 from controllers import omiljeni
 from fastapi.middleware.cors import CORSMiddleware
+from controllers import prijava_controller
 
 
 
@@ -63,6 +64,7 @@ app.include_router(omiljeni.omiljeni_router)
 app.include_router(user_public.router, prefix="/public", tags=["User Public"])
 
 app.include_router(admin.router, prefix="/auth")
+app.include_router(prijava_controller.router)
 
 
 
