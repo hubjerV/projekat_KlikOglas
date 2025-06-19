@@ -8,16 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from controllers import user_public
 from controllers import omiljeni
-from fastapi.middleware.cors import CORSMiddleware
 from controllers import prijava_controller
-
-
-
 from controllers import user
 from controllers import postavi_oglas, oglas_controller, oglasi_detaljno, message_controller
 from controllers import admin
 from models import admin_init
+from controllers import ocjena
 
+# Import modela ocjena da bi SQLModel znao za njega pri kreiranju tabela
+import models.ocjena
 
 app = FastAPI()
 
@@ -38,6 +37,7 @@ app.add_middleware(
 def on_startup():
     from models.admin import Admin
     import models.admin_init
+    import models.ocjena  # OVDE OBAVEZNO import da bi se kreirala tabela
     SQLModel.metadata.create_all(engine)
 
 @app.get("/")
@@ -52,8 +52,7 @@ def test_db(session = Depends(get_session)):
     except OperationalError as e:
         return {"status": "ERROR", "message": str(e)}
 
-
-#app.include_router(user.router, prefix="/auth", tags=["Auth"])
+# Registracija ruta
 app.include_router(user.router)
 app.include_router(postavi_oglas.router)
 app.include_router(oglas_controller.router, tags=["Oglasi"])
@@ -65,8 +64,6 @@ app.include_router(user_public.router, prefix="/public", tags=["User Public"])
 
 app.include_router(admin.router, prefix="/auth")
 app.include_router(prijava_controller.router)
-
-
+app.include_router(ocjena.router)
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-

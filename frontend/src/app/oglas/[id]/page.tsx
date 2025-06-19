@@ -359,6 +359,7 @@ export default function DetaljiOglasa() {
       .catch((err) => console.error("Greška pri dohvaćanju oglasa:", err));
 
     const token = localStorage.getItem("access_token");
+    console.log("Token koji se šalje:", token);
     if (token && id) {
       fetch(`http://localhost:8000/prijava/provjera/${id}`, {
         headers: {
@@ -527,6 +528,13 @@ export default function DetaljiOglasa() {
             </p>
             <p className="text-sm text-gray-500">
               {oglas.broj_pregleda} pregleda
+            </p>
+
+            <p className="text-sm">
+              Objavio:{" "}
+              <Link href={`/korisnik/${oglas.id_korisnika}`} className="text-blue-600 underline">
+                {oglas.korisnik?.username}
+              </Link>
             </p>
 
             <button className="oglas-chat-btn w-full">

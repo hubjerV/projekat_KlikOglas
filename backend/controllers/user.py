@@ -118,6 +118,13 @@ def login(user: UserLogin, session: Session = Depends(get_session)):
 def list_users(session: Session = Depends(get_session)):
     return session.exec(select(User)).all()
 
+@router.get("/{id}", response_model=UserRead)
+def get_user_by_id(id: int, session: Session = Depends(get_session)):
+    user = session.get(User, id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Korisnik nije pronađen")
+    return user
+
 
 # ✅ Ažuriranje profila korisnika
 @router.put("/profile/update", response_model=UserRead)

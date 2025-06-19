@@ -3,6 +3,11 @@ from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
 from sqlalchemy import Column, Numeric, JSON
 from decimal import Decimal
+#from models.user import User  # ← dodaj import
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models.user import User
 
 class Oglas(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -18,3 +23,6 @@ class Oglas(SQLModel, table=True):
     broj_pregleda: int = Field(default=0)
 
     omiljeni: List["Omiljeni"] = Relationship(back_populates="oglas")
+
+    # 🔽 Dodajemo vezu ka User tabeli:
+    korisnik: Optional["User"] = Relationship(back_populates="oglasi")  # ← NOVO
