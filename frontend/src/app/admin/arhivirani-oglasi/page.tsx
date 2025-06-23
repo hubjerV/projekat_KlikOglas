@@ -12,54 +12,38 @@ interface Oglas {
   kontakt: string;
   kategorija: string;
   slike: string[];
-  arhiviran: boolean; // mora biti uključeno
+  arhiviran: boolean;
 }
 
-export default function OglasiPrikaz() {
+export default function AdminArhiviraniOglasi() {
   const [oglasi, setOglasi] = useState<Oglas[]>([]);
-  const [search, setSearch] = useState("");
-  const [lokacija, setLokacija] = useState("");
-  const [kategorija, setKategorija] = useState("");
-  const [minCijena, setMinCijena] = useState("");
-  const [maxCijena, setMaxCijena] = useState("");
-  const [datum, setDatum] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOglasi = async () => {
+  const fetchArhivirani = async () => {
     setLoading(true);
     setError(null);
 
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-    if (lokacija) params.append("lokacija", lokacija);
-    if (kategorija) params.append("kategorija", kategorija);
-    if (minCijena) params.append("min_cijena", minCijena);
-    if (maxCijena) params.append("max_cijena", maxCijena);
-    if (datum) params.append("datum", datum);
-
     try {
       const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("Niste prijavljeni ili nemate pristup.");
 
-      const res = await fetch(
-        `http://localhost:8000/oglasi?${params.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch("http://localhost:8000/admin/arhivirani-oglasi", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        throw new Error("Nemate ovlasti za pristup ovoj stranici.");
+      }
 
       if (!res.ok) {
         throw new Error(`Greška servera: ${res.status}`);
       }
 
       const data = await res.json();
-      if (!Array.isArray(data)) {
-        setOglasi([]);
-      } else {
-        setOglasi(data);
-      }
+      setOglasi(data);
     } catch (err: any) {
       setError(err.message || "Nepoznata greška");
       setOglasi([]);
@@ -87,66 +71,23 @@ export default function OglasiPrikaz() {
         throw new Error("Greška prilikom aktiviranja oglasa.");
       }
 
-      await fetchOglasi(); // ⚠️ Refetch oglasa nakon aktivacije
+      // osvježi listu oglasa nakon uspješnog zahtjeva
+      fetchArhivirani();
     } catch (err) {
       console.error("Greška:", err);
     }
   };
 
   useEffect(() => {
-    fetchOglasi();
+    fetchArhivirani();
   }, []);
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Pretraga i filteri</h2>
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          flexWrap: "wrap",
-          marginBottom: "1rem",
-        }}
-      >
-        <input
-          placeholder="Ključna riječ"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <input
-          placeholder="Lokacija"
-          value={lokacija}
-          onChange={(e) => setLokacija(e.target.value)}
-        />
-        <input
-          placeholder="Kategorija"
-          value={kategorija}
-          onChange={(e) => setKategorija(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Min cijena"
-          value={minCijena}
-          onChange={(e) => setMinCijena(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Max cijena"
-          value={maxCijena}
-          onChange={(e) => setMaxCijena(e.target.value)}
-        />
-        <input
-          type="date"
-          value={datum}
-          onChange={(e) => setDatum(e.target.value)}
-        />
-        <button onClick={fetchOglasi}>Filtriraj</button>
-      </div>
-
-      <h2>Prikaz oglasa</h2>
+      <h2>Arhivirani oglasi (samo za admina)</h2>
 
       {loading && <p>Učitavanje...</p>}
-      {error && <p style={{ color: "red" }}>Greška: {error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {!loading && !error && (
         <div
@@ -157,41 +98,23 @@ export default function OglasiPrikaz() {
             justifyContent: "center",
           }}
         >
-          {oglasi.length === 0 && <p>Nema oglasa za prikaz.</p>}
+          {oglasi.length === 0 && <p>Nema arhiviranih oglasa za prikaz.</p>}
           {oglasi.map((oglas) => (
-            <Link
+            <div
               key={oglas.id}
-              href={`/oglas/${oglas.id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                padding: "1rem",
+                width: "260px",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                border: "1px solid #eee",
+              }}
             >
-              <div
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: "12px",
-                  padding: "1rem",
-                  width: "260px",
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                  position: "relative",
-                  border: "1px solid #eee",
-                }}
+              <Link
+                href={`/oglas/${oglas.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
-                {oglas.arhiviran && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "10px",
-                      right: "10px",
-                      backgroundColor: "crimson",
-                      color: "#fff",
-                      padding: "3px 6px",
-                      fontSize: "0.7rem",
-                      borderRadius: "6px",
-                    }}
-                  >
-                    Arhiviran
-                  </div>
-                )}
-
                 {oglas.slike && oglas.slike.length > 0 ? (
                   <img
                     src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
@@ -244,13 +167,36 @@ export default function OglasiPrikaz() {
                 <p style={{ color: "#888", fontSize: "0.8rem" }}>
                   {oglas.lokacija}
                 </p>
-              </div>
-            </Link>
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    fontStyle: "italic",
+                    color: "gray",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  (Arhiviran oglas)
+                </p>
+              </Link>
+
+              <button
+                onClick={() => aktivirajOglas(oglas.id)}
+                style={{
+                  marginTop: "10px",
+                  padding: "6px 12px",
+                  backgroundColor: "#1abc9c",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                Aktiviraj oglas
+              </button>
+            </div>
           ))}
         </div>
       )}
     </div>
   );
 }
-
-/* dobar */

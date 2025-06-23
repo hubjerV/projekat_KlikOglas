@@ -1,3 +1,4 @@
+#repositories/oglas.oy
 from sqlmodel import select, Session
 from models.postavi_oglas_b import Oglas
 

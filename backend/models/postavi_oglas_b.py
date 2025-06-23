@@ -1,3 +1,4 @@
+#models/postavi_oglas_b.py
 from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
@@ -21,6 +22,7 @@ class Oglas(SQLModel, table=True):
     datum_postavljanja: Optional[datetime] = Field(default_factory=datetime.utcnow)
     id_korisnika: Optional[int] = Field(default=None, foreign_key="user.id")
     broj_pregleda: int = Field(default=0)
+    arhiviran: bool = Field(default=False)
 
     omiljeni: List["Omiljeni"] = Relationship(back_populates="oglas")
 
