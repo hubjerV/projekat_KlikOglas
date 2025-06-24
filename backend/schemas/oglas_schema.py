@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from decimal import Decimal
 from datetime import datetime
@@ -20,11 +20,18 @@ class OglasRead(BaseModel):
     kontakt: Optional[str]
     kategorija: str
     datum_postavljanja: datetime
-    id_korisnika: Optional[int] = None
+    id_korisnika: Optional[int] = Field(None, alias="korisnik_id")
     broj_pregleda: int
+    je_vlasnik: Optional[bool] = False
+
+    #id_korisnika: Optional[int]
+    istaknut: Optional[bool]
 
     # ✅ Dodaj info o korisniku koji je objavio oglas
     korisnik: Optional[OglasKorisnik] = None
 
+    
+
     class Config:
         from_attributes = True
+        allow_population_by_field_name = True

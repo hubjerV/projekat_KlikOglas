@@ -12,7 +12,8 @@ interface Oglas {
   kontakt: string;
   kategorija: string;
   slike: string[];
-  arhiviran: boolean; // mora biti uključeno
+  arhiviran: boolean;
+  istaknut?: boolean; // DODATO
 }
 
 export default function OglasiPrikaz() {
@@ -87,7 +88,7 @@ export default function OglasiPrikaz() {
         throw new Error("Greška prilikom aktiviranja oglasa.");
       }
 
-      await fetchOglasi(); // ⚠️ Refetch oglasa nakon aktivacije
+      await fetchOglasi(); // Refetch oglasa nakon aktivacije
     } catch (err) {
       console.error("Greška:", err);
     }
@@ -186,9 +187,30 @@ export default function OglasiPrikaz() {
                       padding: "3px 6px",
                       fontSize: "0.7rem",
                       borderRadius: "6px",
+                      zIndex: 10,
                     }}
                   >
                     Arhiviran
+                  </div>
+                )}
+
+                {/* OVDJE JE OZNKA ZA ISTAKNUTI OGLAS */}
+                {oglas.istaknut && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      left: "10px",
+                      backgroundColor: "#22c55e",
+                      color: "#fff",
+                      padding: "3px 8px",
+                      fontSize: "0.75rem",
+                      fontWeight: "bold",
+                      borderRadius: "6px",
+                      zIndex: 10,
+                    }}
+                  >
+                    ISTAKNUT
                   </div>
                 )}
 
@@ -252,5 +274,3 @@ export default function OglasiPrikaz() {
     </div>
   );
 }
-
-/* dobar */

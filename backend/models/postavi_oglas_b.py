@@ -23,6 +23,7 @@ class Oglas(SQLModel, table=True):
     id_korisnika: Optional[int] = Field(default=None, foreign_key="user.id")
     broj_pregleda: int = Field(default=0)
     arhiviran: bool = Field(default=False)
+    istaknut: bool = Field(default=False)
 
     omiljeni: List["Omiljeni"] = Relationship(back_populates="oglas")
 

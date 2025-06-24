@@ -23,9 +23,10 @@ def get_filtered_oglasi(
     max_cijena: Optional[float] = None,
     datum: Optional[str] = None
 ):
-    query = db.query(Oglas)
+    query = db.query(Oglas).filter(Oglas.arhiviran == False)
 
-    query = query.filter(Oglas.arhiviran == False)
+    # Sortiraj da se istaknuti oglasi prikazuju prvi
+    query = query.order_by(Oglas.istaknut.desc(), Oglas.datum_postavljanja.desc())
 
     if search:
         query = query.filter(Oglas.naslov.ilike(f"%{search}%") | Oglas.opis.ilike(f"%{search}%"))
@@ -44,7 +45,8 @@ def get_filtered_oglasi(
         except ValueError:
             pass
 
-    return query.all()
+    oglasi = query.all()
+    return [OglasRead.from_orm(o) for o in oglasi]
 
 @router.get("/admin/arhivirani-oglasi", response_model=List[Oglas])
 def get_arhivirani_oglasi(
@@ -77,3 +79,41 @@ def arhiviraj_manualno(
     from repositories.arhiviranje import arhiviraj_stare_oglase
     arhiviraj_stare_oglase(db)
     return {"message": "Arhivirani su oglasi stariji od 3 dana."}
+
+
+@router.post("/oglasi/istakni/{oglas_id}")
+def istakni_oglas(
+    oglas_id: int,
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    oglas = db.query(Oglas).filter(Oglas.id == oglas_id).first()
+
+    if not oglas:
+        raise HTTPException(status_code=404, detail="Oglas nije pronađen.")
+    
+    if oglas.id_korisnika != current_user.id:
+        raise HTTPException(status_code=403, detail="Nemate dozvolu za ovaj oglas.")
+
+    if oglas.istaknut:
+        raise HTTPException(status_code=400, detail="Oglas je već istaknut.")
+
+    if current_user.findit_tokeni < 50:
+        raise HTTPException(status_code=400, detail="Nemate dovoljno FindIt tokena.")
+
+    try:
+        # Oduzmi tokene i istakni oglas
+        current_user.findit_tokeni -= 50
+        oglas.istaknut = True
+
+        db.add(current_user)
+        db.add(oglas)
+        db.commit()
+        db.refresh(oglas)
+        db.refresh(current_user)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Greška na serveru: {str(e)}")
+
+    return {"message": "Oglas je uspješno istaknut."}
+

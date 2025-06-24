@@ -1,318 +1,9 @@
-// 'use client';
-
-// import React, { useEffect, useState } from 'react';
-// import { useParams } from 'next/navigation';
-// import Link from 'next/link';
-
-// interface Oglas {
-//   id: number;
-//   naslov: string;
-//   opis: string;
-//   cijena: number;
-//   lokacija: string;
-//   kontakt: string;
-//   kategorija: string;
-//   slike: string[];
-// }
-
-// export default function DetaljiOglasa() {
-//   const params = useParams();
-//   const [oglas, setOglas] = useState<Oglas | null>(null);
-
-//   useEffect(() => {
-//     const id = Array.isArray(params.id) ? params.id[0] : params.id;
-//     if (!id) return;
-
-//     fetch(`http://localhost:8000/oglasi/${id}`)
-//       .then((res) => res.json())
-//       .then((data) => setOglas(data))
-//       .catch((err) => console.error('Greška pri dohvaćanju oglasa:', err));
-//   }, [params.id]);
-
-//   if (!oglas) return <p>Učitavanje detalja oglasa...</p>;
-
-//   return (
-//   <div className="oglas-wrapper">
-//     <div className="oglas-card">
-//       <h2 className="naslov">{oglas.naslov}</h2>
-
-//       {oglas.slike.length > 0 ? (
-//         <img
-//           src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-//           alt="Slika oglasa"
-//           className="oglas-slika"
-//         />
-//       ) : (
-//         <p className="nema-sliku"><em>Nema slika za ovaj oglas.</em></p>
-//       )}
-
-//       <div className="oglas-info">
-//         <p><strong>Opis:</strong> {oglas.opis}</p>
-//         <p><strong>Cijena:</strong> {oglas.cijena} KM</p>
-//         <p><strong>Lokacija:</strong> {oglas.lokacija}</p>
-//         <p><strong>Kontakt:</strong> {oglas.kontakt}</p>
-//         <p><strong>Kategorija:</strong> {oglas.kategorija}</p>
-//       </div>
-
-//       <Link href="/" className="nazad-link">
-//         ← Nazad na oglase
-//       </Link>
-//     </div>
-//   </div>
-// );
-
-// }
-
-// 'use client';
-
-// import React, { useEffect, useState } from 'react';
-// import { useParams } from 'next/navigation';
-// import Link from 'next/link';
-
-// interface Oglas {
-//   id: number;
-//   naslov: string;
-//   opis: string;
-//   cijena: number;
-//   lokacija: string;
-//   kontakt: string;
-//   kategorija: string;
-//   slike: string[];
-// }
-
-// export default function DetaljiOglasa() {
-//   const params = useParams();
-//   const [oglas, setOglas] = useState<Oglas | null>(null);
-
-//   useEffect(() => {
-//     const id = Array.isArray(params.id) ? params.id[0] : params.id;
-//     if (!id) return;
-
-//     fetch(`http://localhost:8000/oglasi/${id}`)
-//       .then((res) => res.json())
-//       .then((data) => setOglas(data))
-//       .catch((err) => console.error('Greška pri dohvaćanju oglasa:', err));
-//   }, [params.id]);
-
-//   if (!oglas) return <p style={{ padding: '2rem' }}>Učitavanje detalja oglasa...</p>;
-
-//   return (
-//     <div style={{
-//       maxWidth: '800px',
-//       margin: '2rem auto',
-//       padding: '2rem',
-//       backgroundColor: 'white',
-//       borderRadius: '12px',
-//       boxShadow: '0 0 15px rgba(0,0,0,0.1)'
-//     }}>
-//       <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>{oglas.naslov}</h2>
-
-//       {/* Galerija slika */}
-//     {oglas.slike.length > 0 ? (
-//   <div style={{
-//     display: 'flex',
-//     overflowX: 'auto',
-//     gap: '1rem',
-//     paddingBottom: '1rem',
-//     scrollSnapType: 'x mandatory',
-//     borderBottom: '1px solid #ccc'
-//   }}>
-//     {oglas.slike.map((slika, index) => (
-//       <img
-//         key={index}
-//         src={`http://localhost:8000${encodeURI(slika)}`}
-//         alt={`Slika ${index + 1}`}
-//         style={{
-//           height: '300px',
-//           width: 'auto',
-//           objectFit: 'contain',
-//           borderRadius: '8px',
-//           flexShrink: 0,
-//           scrollSnapAlign: 'center',
-//           backgroundColor: '#f5f5f5',
-//           boxShadow: '0 0 8px rgba(0,0,0,0.1)'
-//         }}
-//       />
-//     ))}
-//   </div>
-// ) : (
-//   <p style={{ fontStyle: 'italic', textAlign: 'center' }}>Nema slika za ovaj oglas.</p>
-// )}
-
-//       {/* Opis */}
-//       <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-//         <strong>Opis:</strong> {oglas.opis}
-//       </p>
-
-//       {/* Kartice */}
-//       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-//         <div className="card-info"><strong>Lokacija:</strong> {oglas.lokacija}</div>
-//         <div className="card-info"><strong>Kategorija:</strong> {oglas.kategorija}</div>
-//         <div className="card-info"><strong>Kontakt:</strong> {oglas.kontakt}</div>
-//         <div className="card-info"><strong>Cijena:</strong> {oglas.cijena} KM</div>
-//       </div>
-
-//       {/* Dugme za nazad */}
-//       <div style={{ marginTop: '2rem' }}>
-//         <Link href="/" style={{ color: '#0070f3' }}>← Nazad na oglase</Link>
-//       </div>
-//     </div>
-//   );
-// }
-
-// 'use client';
-
-// import React, { useEffect, useState } from 'react';
-// import { useParams } from 'next/navigation';
-// import Link from 'next/link';
-
-// interface Oglas {
-//   id: number;
-//   naslov: string;
-//   opis: string;
-//   cijena: number;
-//   lokacija: string;
-//   kontakt: string;
-//   kategorija: string;
-//   slike: string[];
-//   id_korisnika?: number; // Dodaj ako postoji u bazi
-// }
-
-// interface Message {
-//   id: number;
-//   sender_id: number;
-//   receiver_id: number;
-//   oglas_id: number;
-//   content: string;
-//   timestamp: string;
-// }
-
-// export default function DetaljiOglasa() {
-//   const params = useParams();
-//   const [oglas, setOglas] = useState<Oglas | null>(null);
-//   const [poruke, setPoruke] = useState<Message[]>([]);
-//   const [novaPoruka, setNovaPoruka] = useState('');
-
-//   useEffect(() => {
-//     const id = Array.isArray(params.id) ? params.id[0] : params.id;
-//     if (!id) return;
-
-//     fetch(`http://localhost:8000/oglasi/${id}`)
-//       .then((res) => res.json())
-//       .then((data) => setOglas(data))
-//       .catch((err) => console.error('Greška pri dohvaćanju oglasa:', err));
-
-//     fetch(`http://localhost:8000/messages/${id}`)
-//       .then((res) => res.json())
-//       .then((data) => setPoruke(data))
-//       .catch((err) => console.error('Greška pri dohvaćanju poruka:', err));
-//   }, [params.id]);
-
-//   function handlePosaljiPoruku() {
-//     if (!oglas) return;
-//     const poruka = {
-//       receiver_id: oglas.id_korisnika || 1, // zamijeni s pravim korisnikom
-//       oglas_id: oglas.id,
-//       content: novaPoruka,
-//     };
-
-//     // fetch('http://localhost:8000/messages/', {
-//     //   method: 'POST',
-//     //   headers: { 'Content-Type': 'application/json' },
-//     //   body: JSON.stringify(poruka),
-//     // })
-//     const token = localStorage.getItem("token");
-
-//       fetch("http://localhost:8000/messages", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//     "Authorization": `Bearer ${token}`,
-//   },
-//   body: JSON.stringify(poruka), // ← ovdje šalješ validne podatke
-// })
-
-//       .then((res) => {
-//         if (!res.ok) throw new Error('Neautorizovan');
-//         return res.json();
-//       })
-//       .then((data) => {
-//         setPoruke((prev) => [...prev, data]);
-//         setNovaPoruka('');
-//       })
-//       .catch((err) => {
-//         alert('Morate biti prijavljeni da biste poslali poruku!');
-//         console.error(err);
-//       });
-//   }
-
-//   if (!oglas) return <p style={{ padding: '2rem' }}>Učitavanje detalja oglasa...</p>;
-
-//   return (
-//     <div style={{ maxWidth: '800px', margin: '2rem auto', padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 0 15px rgba(0,0,0,0.1)' }}>
-//       <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>{oglas.naslov}</h2>
-
-//       {oglas.slike.length > 0 ? (
-//         <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', justifyContent: 'center', marginBottom: '1.5rem' }}>
-//           {oglas.slike.map((slika, index) => (
-//             <img
-//               key={index}
-//               src={`http://localhost:8000${encodeURI(slika)}`}
-//               alt={`Slika ${index + 1}`}
-//               style={{ maxHeight: '400px', maxWidth: '100%', objectFit: 'contain', borderRadius: '8px', backgroundColor: '#f0f0f0' }}
-//             />
-//           ))}
-//         </div>
-//       ) : (
-//         <p style={{ fontStyle: 'italic', textAlign: 'center' }}>Nema slika za ovaj oglas.</p>
-//       )}
-
-//       <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-//         <strong>Opis:</strong> {oglas.opis}
-//       </p>
-
-//       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-//         <div className="card-info"><strong>Lokacija:</strong> {oglas.lokacija}</div>
-//         <div className="card-info"><strong>Kategorija:</strong> {oglas.kategorija}</div>
-//         <div className="card-info"><strong>Kontakt:</strong> {oglas.kontakt}</div>
-//         <div className="card-info"><strong>Cijena:</strong> {oglas.cijena} KM</div>
-//       </div>
-
-//       <div style={{ marginTop: '2rem' }}>
-//         <h3>Poruke</h3>
-//         {poruke.length === 0 ? (
-//           <p>Nema poruka za ovaj oglas.</p>
-//         ) : (
-//           poruke.map((msg) => (
-//             <div key={msg.id} style={{ padding: '0.5rem', borderBottom: '1px solid #ccc' }}>
-//               <strong>{msg.sender_id === 1 ? 'Vi' : 'Korisnik ' + msg.sender_id}:</strong> {msg.content}
-//               <div style={{ fontSize: '0.8rem', color: '#777' }}>{new Date(msg.timestamp).toLocaleString()}</div>
-//             </div>
-//           ))
-//         )}
-
-//         <textarea
-//           value={novaPoruka}
-//           onChange={(e) => setNovaPoruka(e.target.value)}
-//           placeholder="Unesite poruku..."
-//           style={{ width: '100%', height: '80px', marginTop: '1rem' }}
-//         />
-
-//         <button onClick={handlePosaljiPoruku} style={{ marginTop: '0.5rem' }}>Pošalji</button>
-//       </div>
-
-//       <div style={{ marginTop: '2rem' }}>
-//         <Link href="/" style={{ color: '#0070f3' }}>← Nazad na oglase</Link>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 
 interface Oglas {
   id: number;
@@ -323,8 +14,13 @@ interface Oglas {
   kontakt: string;
   kategorija: string;
   slike: string[];
-  id_korisnika?: number;
+  korisnik_id?: number;
+  korisnik?: {
+    username: string;
+  };
   broj_pregleda: number;
+  istaknut?: boolean;
+  je_vlasnik?: boolean;
 }
 
 interface Message {
@@ -346,20 +42,44 @@ export default function DetaljiOglasa() {
   const [prijavaPoruka, setPrijavaPoruka] = useState("");
   const [prijavljen, setPrijavljen] = useState(false);
 
+  const [istakniPoruka, setIstakniPoruka] = useState<string | null>(null);
+  const [istakniLoading, setIstakniLoading] = useState(false);
+
+  // Token i korisnikId
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+  let korisnikId: number | null = null;
+  if (token) {
+    try {
+      const decoded: any = jwtDecode(token);
+      korisnikId = Number(decoded.sub);
+    } catch {
+      korisnikId = null;
+    }
+  }
+
   useEffect(() => {
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     if (!id) return;
 
-    fetch(`http://localhost:8000/oglasi/${id}`)
-      .then((res) => res.json())
+    fetch(`http://localhost:8000/oglasi/${id}`, {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : undefined,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Oglas nije pronađen");
+        return res.json();
+      })
       .then((data) => {
+        console.log("Detalji oglasa:", data); // <-- DEBUG LOG
         setOglas(data);
         dodajUHistoriju(data);
       })
       .catch((err) => console.error("Greška pri dohvaćanju oglasa:", err));
 
-    const token = localStorage.getItem("access_token");
-    console.log("Token koji se šalje:", token);
     if (token && id) {
       fetch(`http://localhost:8000/prijava/provjera/${id}`, {
         headers: {
@@ -377,7 +97,7 @@ export default function DetaljiOglasa() {
           console.error("Greška pri provjeri prijave:", err);
         });
     }
-  }, [params.id]);
+  }, [params.id, token]);
 
   function dodajUHistoriju(oglas: Oglas) {
     const prethodni = JSON.parse(
@@ -393,13 +113,20 @@ export default function DetaljiOglasa() {
 
   function handlePosaljiPoruku() {
     if (!oglas) return;
+    if (!novaPoruka.trim()) {
+      alert("Poruka ne smije biti prazna!");
+      return;
+    }
     const poruka = {
-      receiver_id: oglas.id_korisnika || 1,
+      receiver_id: oglas.korisnik_id || 1,
       oglas_id: oglas.id,
       content: novaPoruka,
     };
 
-    const token = localStorage.getItem("access_token");
+    if (!token) {
+      alert("Morate biti prijavljeni da biste poslali poruku!");
+      return;
+    }
 
     fetch("http://localhost:8000/messages", {
       method: "POST",
@@ -424,7 +151,6 @@ export default function DetaljiOglasa() {
   }
 
   function handleDodajOmiljeni(idOglasa: number) {
-    const token = localStorage.getItem("access_token");
     if (!token) {
       alert("Morate biti prijavljeni da biste dodali oglas u omiljene.");
       return;
@@ -463,7 +189,6 @@ export default function DetaljiOglasa() {
       return;
     }
 
-    const token = localStorage.getItem("access_token");
     if (!token) {
       alert("Morate biti prijavljeni da biste prijavili oglas.");
       return;
@@ -491,35 +216,81 @@ export default function DetaljiOglasa() {
       });
   }
 
+  function handleIstakniOglas() {
+    if (!oglas) return;
+    if (!token) {
+      alert("Morate biti prijavljeni da biste istakli oglas.");
+      return;
+    }
+    setIstakniLoading(true);
+    setIstakniPoruka(null);
+
+    fetch(`http://localhost:8000/oglasi/istakni/${oglas.id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
+        setIstakniLoading(false);
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.detail || "Greška pri isticanju oglasa");
+        }
+        setIstakniPoruka("Oglas je uspješno istaknut.");
+        // refresh oglasa
+        return fetch(`http://localhost:8000/oglasi/${oglas.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            console.log("Oglas nakon isticanja:", data); // <-- DEBUG LOG
+            setOglas(data);
+          });
+      })
+      .catch((err) => {
+        setIstakniLoading(false);
+        setIstakniPoruka(err.message);
+      });
+  }
+
   if (!oglas) return <p className="p-8">Učitavanje detalja oglasa...</p>;
 
   return (
     <div>
       <div className="oglas-wrapper">
-        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
+        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
           <div className="oglas-levo flex flex-col gap-4 w-full md:w-1/2">
             <div className="oglas-slika bg-[#f0f0f0] flex justify-center items-center rounded">
-              <img
-                src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-                alt="Slika oglasa"
-                className="w-full h-auto object-contain max-h-[400px]"
-              />
+              {oglas.slike && oglas.slike.length > 0 ? (
+                <img
+                  src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
+                  alt="Slika oglasa"
+                  className="w-full h-auto object-contain max-h-[400px]"
+                />
+              ) : (
+                <div className="text-gray-500 py-20">Oglas nema slika</div>
+              )}
             </div>
 
-            <div className="flex gap-2 overflow-x-auto">
-              {oglas.slike.map((slika, index) => (
-                <img
-                  key={index}
-                  src={`http://localhost:8000${encodeURI(slika)}`}
-                  alt={`Slika ${index + 1}`}
-                  className="w-20 h-20 object-cover rounded border"
-                />
-              ))}
-            </div>
+            {oglas.slike && oglas.slike.length > 0 && (
+              <div className="flex gap-2 overflow-x-auto">
+                {oglas.slike.map((slika, i) => (
+                  <img
+                    key={i}
+                    src={`http://localhost:8000${encodeURI(slika)}`}
+                    alt={`Slika ${i + 1}`}
+                    className="w-20 h-20 object-cover rounded border"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="oglas-desno w-full md:w-1/2 space-y-3">
-            <h1 className="naslov">{oglas.naslov}</h1>
+            <h1 className="naslov text-3xl font-bold">{oglas.naslov}</h1>
             <p className="text-xl font-bold text-gray-800">
               {oglas.cijena} BAM
             </p>
@@ -529,13 +300,40 @@ export default function DetaljiOglasa() {
             <p className="text-sm text-gray-500">
               {oglas.broj_pregleda} pregleda
             </p>
-
             <p className="text-sm">
               Objavio:{" "}
-              <Link href={`/korisnik/${oglas.id_korisnika}`} className="text-blue-600 underline">
-                {oglas.korisnik?.username}
+              <Link
+                href={`/korisnik/${oglas.korisnik_id}`}
+                className="text-blue-600 underline"
+              >
+                {oglas.korisnik?.username || "Nepoznat korisnik"}
               </Link>
             </p>
+
+            {/* Prikaz dugmeta za isticanje samo ako je vlasnik i oglas nije već istaknut */}
+            {oglas.je_vlasnik && !oglas.istaknut && (
+              <button
+                onClick={handleIstakniOglas}
+                disabled={istakniLoading}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
+              >
+                {istakniLoading
+                  ? "Isticanje..."
+                  : "Istakni svoj oglas (50 tokena)"}
+              </button>
+            )}
+
+            {istakniPoruka && (
+              <p
+                className={`mt-2 font-semibold ${
+                  istakniPoruka.includes("uspješno")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {istakniPoruka}
+              </p>
+            )}
 
             <button className="oglas-chat-btn w-full">
               🛒 {oglas.cijena} BAM
@@ -556,7 +354,6 @@ export default function DetaljiOglasa() {
                 ⭐ Dodaj u omiljene
               </button>
 
-              {/* Prijava oglasa */}
               {prijavljen ? (
                 <p className="text-green-600 font-semibold">
                   ✅ Već ste prijavili ovaj oglas.
@@ -597,7 +394,7 @@ export default function DetaljiOglasa() {
 
               <Link
                 href="/oglasi_prikaz"
-                className="text-blue-600 hover:underline font-medium text-center mt-2"
+                className="text-blue-600 hover:underline font-medium text-center mt-2 block"
               >
                 ← Nazad na oglase
               </Link>
@@ -610,34 +407,6 @@ export default function DetaljiOglasa() {
               </Link>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Pregledani oglasi */}
-      <div className="mt-10 px-4 max-w-6xl mx-auto flex flex-col items-center justify-center">
-        <div className="flex gap-4 overflow-x-auto">
-          {(
-            JSON.parse(
-              localStorage.getItem("pregledaniOglasi") || "[]"
-            ) as Oglas[]
-          )
-            .filter((o) => o.id !== oglas.id)
-            .map((og) => (
-              <div
-                key={og.id}
-                className="min-w-[150px] max-w-[200px] bg-white shadow rounded p-2 hover:shadow-lg transition"
-              >
-                <Link href={`/oglas/${og.id}`}>
-                  <img
-                    src={`http://localhost:8000${encodeURI(og.slike[0])}`}
-                    alt={og.naslov}
-                    className="w-full h-24 object-cover rounded mb-2"
-                  />
-                  <p className="text-sm font-medium">{og.naslov}</p>
-                  <p className="text-xs text-gray-600">{og.cijena} BAM</p>
-                </Link>
-              </div>
-            ))}
         </div>
       </div>
     </div>

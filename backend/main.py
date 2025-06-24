@@ -14,6 +14,8 @@ from controllers import postavi_oglas, oglas_controller, oglasi_detaljno, messag
 from controllers import admin
 from models import admin_init
 from controllers import ocjena
+from controllers import token_zahtjev
+from controllers.oglasi_detaljno import router as oglasi_router
 
 # Import modela ocjena da bi SQLModel znao za njega pri kreiranju tabela
 import models.ocjena
@@ -65,5 +67,8 @@ app.include_router(user_public.router, prefix="/public", tags=["User Public"])
 app.include_router(admin.router, prefix="/auth")
 app.include_router(prijava_controller.router)
 app.include_router(ocjena.router)
+app.include_router(oglasi_router)
+app.include_router(token_zahtjev.router)
+
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

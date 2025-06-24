@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-// Ispravan import jwtDecode, nije destrukturiran
 import { jwtDecode } from "jwt-decode";
 
 interface Ocjena {
@@ -17,7 +16,7 @@ interface Korisnik {
   id: number;
   username: string;
   email: string;
-  prosjecna_ocjena: number; // možeš ostaviti, ne koristimo ovaj dio sada
+  prosjecna_ocjena: number;
 }
 
 export default function ProfilKorisnika() {
@@ -29,16 +28,18 @@ export default function ProfilKorisnika() {
   const [mozeOcijeniti, setMozeOcijeniti] = useState(true);
   const [vecOcijenio, setVecOcijenio] = useState(false);
 
+  const [otvoriFormu, setOtvoriFormu] = useState(false);
+  const [brojTokena, setBrojTokena] = useState(50);
+  const [porukaTokena, setPorukaTokena] = useState("");
+
   const token =
     typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-  // Izvuci korisnički username iz tokena (pretpostavka da je u tokenu pod "username")
   const korisnikUsername = token ? (jwtDecode(token) as any).username : null;
   const korisnikId = token ? (jwtDecode(token) as any).sub : null;
 
   useEffect(() => {
     if (!id) return;
 
-    // Dohvati korisnika
     axios
       .get(`http://localhost:8000/auth/${id}`)
       .then((res) => setKorisnik(res.data))
@@ -47,13 +48,11 @@ export default function ProfilKorisnika() {
         setKorisnik(null);
       });
 
-    // Dohvati ocjene
     axios
       .get(`http://localhost:8000/ocjene/korisnik/${id}`)
       .then((res) => {
         setOcjene(res.data);
 
-        // Provjeri da li je korisnik već ocijenio ovog korisnika
         const ocjenaOdKorisnika = res.data.find(
           (o: Ocjena) => o.korisnik_ocjenjivac_username === korisnikUsername
         );
@@ -62,7 +61,6 @@ export default function ProfilKorisnika() {
           setVecOcijenio(true);
           setMozeOcijeniti(false);
         } else {
-          // Ako je profil samog korisnika, ne može ocijeniti sam sebe
           if (korisnikId && korisnikId.toString() === id.toString()) {
             setMozeOcijeniti(false);
           } else {
@@ -98,22 +96,36 @@ export default function ProfilKorisnika() {
       setVecOcijenio(true);
       setMozeOcijeniti(false);
 
-      // Osveži ocjene nakon slanja
       const res = await axios.get(
         `http://localhost:8000/ocjene/korisnik/${id}`
       );
       setOcjene(res.data);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error("Greška prilikom slanja ocjene:", err.response?.data);
-      } else {
-        console.error("Greška prilikom slanja ocjene:", err);
-      }
+      console.error("Greška prilikom slanja ocjene:", err);
       alert("Greška prilikom slanja ocjene.");
     }
   };
 
-  // Izračunaj prosječnu ocjenu na osnovu ocjena iz stanja
+  const posaljiZahtjevZaTokene = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/token-zahtjevi/",
+        { broj_tokena: brojTokena },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPorukaTokena("Zahtjev je uspješno poslan.");
+      setOtvoriFormu(false);
+    } catch (err: any) {
+      setPorukaTokena(
+        err?.response?.data?.detail || "Greška prilikom slanja zahtjeva."
+      );
+    }
+  };
+
   const prosjecnaOcjena =
     ocjene.length > 0
       ? ocjene.reduce((sum, o) => sum + o.ocjena, 0) / ocjene.length
@@ -128,6 +140,44 @@ export default function ProfilKorisnika() {
           <p className="text-yellow-600 font-semibold">
             Prosječna ocjena: {prosjecnaOcjena.toFixed(2)}
           </p>
+
+          {korisnikId?.toString() === id?.toString() && (
+            <div className="mt-4">
+              <button
+                onClick={() => setOtvoriFormu(!otvoriFormu)}
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Dopuni tokene
+              </button>
+
+              {otvoriFormu && (
+                <div className="mt-2 bg-gray-100 p-4 rounded shadow">
+                  <label className="block mb-2 font-medium">
+                    Pošalji zahtjev za FindItTokene
+                  </label>
+                  <select
+                    value={brojTokena}
+                    onChange={(e) => setBrojTokena(parseInt(e.target.value))}
+                    className="border p-2 rounded mb-2 w-full"
+                  >
+                    <option value={50}>50 tokena</option>
+                    <option value={100}>100 tokena</option>
+                    <option value={200}>200 tokena</option>
+                  </select>
+                  <button
+                    onClick={posaljiZahtjevZaTokene}
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                  >
+                    Pošalji
+                  </button>
+                </div>
+              )}
+
+              {porukaTokena && (
+                <p className="mt-2 text-sm text-gray-800">{porukaTokena}</p>
+              )}
+            </div>
+          )}
         </>
       ) : (
         <p className="text-red-500">Korisnik nije pronađen.</p>
