@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { jwtDecode } from "jwt-decode";
+import { useTranslation } from "react-i18next";
 
 interface Oglas {
   id: number;
@@ -14,13 +14,9 @@ interface Oglas {
   kontakt: string;
   kategorija: string;
   slike: string[];
-  korisnik_id?: number;
-  korisnik?: {
-    username: string;
-  };
+  id_korisnika?: number;
   broj_pregleda: number;
-  istaknut?: boolean;
-  je_vlasnik?: boolean;
+  korisnik?: { username: string };
 }
 
 interface Message {
@@ -33,126 +29,54 @@ interface Message {
 }
 
 export default function DetaljiOglasa() {
+  const { t } = useTranslation();
   const params = useParams();
   const [oglas, setOglas] = useState<Oglas | null>(null);
-  const [poruke, setPoruke] = useState<Message[]>([]);
-  const [novaPoruka, setNovaPoruka] = useState("");
-
-  const [razlogPrijave, setRazlogPrijave] = useState("Neodgovarajući sadržaj");
   const [prijavaPoruka, setPrijavaPoruka] = useState("");
   const [prijavljen, setPrijavljen] = useState(false);
-
-  const [istakniPoruka, setIstakniPoruka] = useState<string | null>(null);
-  const [istakniLoading, setIstakniLoading] = useState(false);
-
-  // Token i korisnikId
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-  let korisnikId: number | null = null;
-  if (token) {
-    try {
-      const decoded: any = jwtDecode(token);
-      korisnikId = Number(decoded.sub);
-    } catch {
-      korisnikId = null;
-    }
-  }
+  const [razlogPrijave, setRazlogPrijave] = useState(
+    t("details.report.reasonOptions.unsuitable")
+  );
 
   useEffect(() => {
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     if (!id) return;
 
-    fetch(`http://localhost:8000/oglasi/${id}`, {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : undefined,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Oglas nije pronađen");
-        return res.json();
-      })
+    fetch(`http://localhost:8000/oglasi/${id}`)
+      .then((res) => res.json())
       .then((data) => {
-        console.log("Detalji oglasa:", data); // <-- DEBUG LOG
         setOglas(data);
         dodajUHistoriju(data);
       })
-      .catch((err) => console.error("Greška pri dohvaćanju oglasa:", err));
+      .catch(() => alert(t("details.loadingError")));
 
+    const token = localStorage.getItem("access_token");
     if (token && id) {
       fetch(`http://localhost:8000/prijava/provjera/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          if (!res.ok) throw new Error("Greška pri provjeri prijave");
+          if (!res.ok) throw new Error();
           return res.json();
         })
-        .then((data: boolean) => {
-          setPrijavljen(data);
-        })
-        .catch((err) => {
-          console.error("Greška pri provjeri prijave:", err);
-        });
+        .then((data: boolean) => setPrijavljen(data))
+        .catch(() => console.error("Error checking report"));
     }
-  }, [params.id, token]);
+  }, [params.id, t]);
 
   function dodajUHistoriju(oglas: Oglas) {
     const prethodni = JSON.parse(
       localStorage.getItem("pregledaniOglasi") || "[]"
     ) as Oglas[];
-
     const bezDuplikata = prethodni.filter((o) => o.id !== oglas.id);
-    const novi = [oglas, ...bezDuplikata];
-    const ograniceni = novi.slice(0, 5);
-
-    localStorage.setItem("pregledaniOglasi", JSON.stringify(ograniceni));
-  }
-
-  function handlePosaljiPoruku() {
-    if (!oglas) return;
-    if (!novaPoruka.trim()) {
-      alert("Poruka ne smije biti prazna!");
-      return;
-    }
-    const poruka = {
-      receiver_id: oglas.korisnik_id || 1,
-      oglas_id: oglas.id,
-      content: novaPoruka,
-    };
-
-    if (!token) {
-      alert("Morate biti prijavljeni da biste poslali poruku!");
-      return;
-    }
-
-    fetch("http://localhost:8000/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(poruka),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Neautorizovan");
-        return res.json();
-      })
-      .then((data) => {
-        setPoruke((prev) => [...prev, data]);
-        setNovaPoruka("");
-      })
-      .catch((err) => {
-        alert("Morate biti prijavljeni da biste poslali poruku!");
-        console.error(err);
-      });
+    const novi = [oglas, ...bezDuplikata].slice(0, 5);
+    localStorage.setItem("pregledaniOglasi", JSON.stringify(novi));
   }
 
   function handleDodajOmiljeni(idOglasa: number) {
+    const token = localStorage.getItem("access_token");
     if (!token) {
-      alert("Morate biti prijavljeni da biste dodali oglas u omiljene.");
+      alert(t("details.favorites.mustLogin"));
       return;
     }
 
@@ -168,29 +92,25 @@ export default function DetaljiOglasa() {
         if (!res.ok) {
           const errorData = await res.json();
           if (errorData.detail === "Oglas već postoji u omiljenim") {
-            alert("Oglas se već nalazi u omiljenim");
+            alert(t("details.favorites.alreadyAdded"));
             return;
           }
-          throw new Error(
-            errorData.detail || "Greška pri dodavanju u omiljene"
-          );
+          throw new Error(errorData.detail || t("details.favorites.error"));
         }
-        alert("Oglas je dodat u omiljene.");
+        alert(t("details.favorites.added"));
       })
-      .catch((err) => {
-        console.error(err);
-        alert("Došlo je do greške prilikom dodavanja: " + err.message);
-      });
+      .catch((err) => alert(t("details.favorites.error") + ": " + err.message));
   }
 
   function handlePrijaviOglas(idOglasa: number) {
     if (prijavljen) {
-      setPrijavaPoruka("Već ste prijavili ovaj oglas.");
+      setPrijavaPoruka(t("details.already.reported"));
       return;
     }
 
+    const token = localStorage.getItem("access_token");
     if (!token) {
-      alert("Morate biti prijavljeni da biste prijavili oglas.");
+      alert(t("details.report.mustLogin"));
       return;
     }
 
@@ -206,134 +126,62 @@ export default function DetaljiOglasa() {
       }),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Greška pri prijavi oglasa");
-        setPrijavaPoruka("Oglas je uspješno prijavljen.");
+        if (!res.ok) throw new Error(t("details.report.error"));
+        setPrijavaPoruka(t("details.report.success"));
         setPrijavljen(true);
       })
-      .catch((err) => {
-        console.error(err);
-        setPrijavaPoruka("Došlo je do greške prilikom prijave.");
-      });
+      .catch(() => setPrijavaPoruka(t("details.report.error")));
   }
 
-  function handleIstakniOglas() {
-    if (!oglas) return;
-    if (!token) {
-      alert("Morate biti prijavljeni da biste istakli oglas.");
-      return;
-    }
-    setIstakniLoading(true);
-    setIstakniPoruka(null);
-
-    fetch(`http://localhost:8000/oglasi/istakni/${oglas.id}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        setIstakniLoading(false);
-        if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData.detail || "Greška pri isticanju oglasa");
-        }
-        setIstakniPoruka("Oglas je uspješno istaknut.");
-        // refresh oglasa
-        return fetch(`http://localhost:8000/oglasi/${oglas.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((r) => r.json())
-          .then((data) => {
-            console.log("Oglas nakon isticanja:", data); // <-- DEBUG LOG
-            setOglas(data);
-          });
-      })
-      .catch((err) => {
-        setIstakniLoading(false);
-        setIstakniPoruka(err.message);
-      });
-  }
-
-  if (!oglas) return <p className="p-8">Učitavanje detalja oglasa...</p>;
+  if (!oglas) return <p className="p-8">{t("details.loading")}</p>;
 
   return (
     <div>
       <div className="oglas-wrapper">
-        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
           <div className="oglas-levo flex flex-col gap-4 w-full md:w-1/2">
             <div className="oglas-slika bg-[#f0f0f0] flex justify-center items-center rounded">
-              {oglas.slike && oglas.slike.length > 0 ? (
-                <img
-                  src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
-                  alt="Slika oglasa"
-                  className="w-full h-auto object-contain max-h-[400px]"
-                />
-              ) : (
-                <div className="text-gray-500 py-20">Oglas nema slika</div>
-              )}
+              <img
+                src={`http://localhost:8000${encodeURI(oglas.slike[0])}`}
+                alt={t("details.imageAlt")}
+                className="w-full h-auto object-contain max-h-[400px]"
+              />
             </div>
 
-            {oglas.slike && oglas.slike.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto">
-                {oglas.slike.map((slika, i) => (
-                  <img
-                    key={i}
-                    src={`http://localhost:8000${encodeURI(slika)}`}
-                    alt={`Slika ${i + 1}`}
-                    className="w-20 h-20 object-cover rounded border"
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex gap-2 overflow-x-auto">
+              {oglas.slike.map((slika, index) => (
+                <img
+                  key={index}
+                  src={`http://localhost:8000${encodeURI(slika)}`}
+                  alt={`${t("details.imageAlt")} ${index + 1}`}
+                  className="w-20 h-20 object-cover rounded border"
+                />
+              ))}
+            </div>
           </div>
 
           <div className="oglas-desno w-full md:w-1/2 space-y-3">
-            <h1 className="naslov text-3xl font-bold">{oglas.naslov}</h1>
+            <h1 className="naslov">{oglas.naslov}</h1>
             <p className="text-xl font-bold text-gray-800">
               {oglas.cijena} BAM
             </p>
             <p>
-              <strong>Opis: </strong> {oglas.opis}
+              <strong>{t("details.description")}: </strong> {oglas.opis}
             </p>
             <p className="text-sm text-gray-500">
-              {oglas.broj_pregleda} pregleda
+              {oglas.broj_pregleda}{" "}
+              {t("details.views", { count: oglas.broj_pregleda })}
             </p>
+
             <p className="text-sm">
-              Objavio:{" "}
+              {t("details.postedBy")}:{" "}
               <Link
-                href={`/korisnik/${oglas.korisnik_id}`}
+                href={`/korisnik/${oglas.id_korisnika}`}
                 className="text-blue-600 underline"
               >
-                {oglas.korisnik?.username || "Nepoznat korisnik"}
+                {oglas.korisnik?.username || t("details.noUsername")}
               </Link>
             </p>
-
-            {/* Prikaz dugmeta za isticanje samo ako je vlasnik i oglas nije već istaknut */}
-            {oglas.je_vlasnik && !oglas.istaknut && (
-              <button
-                onClick={handleIstakniOglas}
-                disabled={istakniLoading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
-              >
-                {istakniLoading
-                  ? "Isticanje..."
-                  : "Istakni svoj oglas (50 tokena)"}
-              </button>
-            )}
-
-            {istakniPoruka && (
-              <p
-                className={`mt-2 font-semibold ${
-                  istakniPoruka.includes("uspješno")
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {istakniPoruka}
-              </p>
-            )}
 
             <button className="oglas-chat-btn w-full">
               🛒 {oglas.cijena} BAM
@@ -343,7 +191,7 @@ export default function DetaljiOglasa() {
               onClick={() => (window.location.href = `/chat/${oglas.id}`)}
               className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded font-semibold"
             >
-              💬 Otvori Chat
+              💬 {t("details.openChat")}
             </button>
 
             <div className="flex flex-col gap-3 mt-6">
@@ -351,32 +199,36 @@ export default function DetaljiOglasa() {
                 onClick={() => handleDodajOmiljeni(oglas.id)}
                 className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded"
               >
-                ⭐ Dodaj u omiljene
+                ⭐ {t("details.addFavorites")}
               </button>
 
               {prijavljen ? (
                 <p className="text-green-600 font-semibold">
-                  ✅ Već ste prijavili ovaj oglas.
+                  {t("details.already.reported")}
                 </p>
               ) : (
                 <>
                   <label className="block">
-                    Razlog prijave:
+                    {t("details.report.reason")}:
                     <select
                       className="block w-full mt-1 p-2 border rounded"
                       value={razlogPrijave}
                       onChange={(e) => setRazlogPrijave(e.target.value)}
                     >
-                      <option value="Neodgovarajući sadržaj">
-                        Neodgovarajući sadržaj
+                      <option
+                        value={t("details.report.reasonOptions.unsuitable")}
+                      >
+                        {t("details.report.reasonOptions.unsuitable")}
                       </option>
-                      <option value="Prevara / Sumnjiv oglas">
-                        Prevara / Sumnjiv oglas
+                      <option value={t("details.report.reasonOptions.fraud")}>
+                        {t("details.report.reasonOptions.fraud")}
                       </option>
-                      <option value="Lažne informacije">
-                        Lažne informacije
+                      <option value={t("details.report.reasonOptions.fake")}>
+                        {t("details.report.reasonOptions.fake")}
                       </option>
-                      <option value="Drugo">Drugo</option>
+                      <option value={t("details.report.reasonOptions.other")}>
+                        {t("details.report.reasonOptions.other")}
+                      </option>
                     </select>
                   </label>
 
@@ -384,7 +236,7 @@ export default function DetaljiOglasa() {
                     onClick={() => handlePrijaviOglas(oglas.id)}
                     className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded"
                   >
-                    🚨 Prijavi oglas
+                    🚨 {t("details.report.reportAd")}
                   </button>
                 </>
               )}
@@ -394,16 +246,16 @@ export default function DetaljiOglasa() {
 
               <Link
                 href="/oglasi_prikaz"
-                className="text-blue-600 hover:underline font-medium text-center mt-2 block"
+                className="text-blue-600 hover:underline font-medium text-center mt-2"
               >
-                ← Nazad na oglase
+                ← {t("details.backToAds")}
               </Link>
 
               <Link
                 href="/omiljeni"
                 className="inline-block bg-green-500 hover:bg-green-600 text-white text-center px-4 py-2 rounded font-semibold mt-2"
               >
-                💚 Pogledaj omiljene oglase
+                💚 {t("details.viewFavorites")}
               </Link>
             </div>
           </div>

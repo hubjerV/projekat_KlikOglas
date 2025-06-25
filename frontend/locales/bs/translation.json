@@ -1,0 +1,62 @@
+{
+  "filters": {
+    "title": "Pretraga i filteri",
+    "keyword": "Ključna riječ",
+    "location": "Lokacija",
+    "category": "Kategorija",
+    "minPrice": "Min cijena",
+    "maxPrice": "Max cijena",
+    "filter": "Filtriraj"
+  },
+  "ads": {
+    "title": "Prikaz oglasa",
+    "loading": "Učitavanje...",
+    "error": "Greška",
+    "noAds": "Nema oglasa za prikaz.",
+    "archived": "Arhiviran",
+    "featured": "ISTAKNUT"
+  },
+  "details": {
+    "loading": "Učitavanje detalja oglasa...",
+    "loadingError": "Greška pri učitavanju detalja oglasa",
+    "noImages": "Nema slika za ovaj oglas.",
+    "imageAlt": "Slika oglasa",
+    "price": "Cijena",
+    "description": "Opis",
+    "views": "{{count}} pregleda",
+    "postedBy": "Objavio",
+    "noUsername": "Nepoznat korisnik",
+    "highlightAd": "Istakni svoj oglas (50 tokena)",
+    "highlighting": "Isticanje...",
+    "highlightedSuccess": "Oglas je uspješno istaknut.",
+    "openChat": "💬 Otvori Chat",
+    "addFavorites": "⭐ Dodaj u omiljene",
+    "favorites": {
+      "mustLogin": "Morate biti prijavljeni da biste dodali u omiljene.",
+      "alreadyAdded": "Oglas se već nalazi u omiljenim.",
+      "added": "Oglas je dodat u omiljene.",
+      "error": "Greška pri dodavanju u omiljene"
+    },
+    "report": {
+      "reason": "Razlog prijave",
+      "reasonOptions": {
+        "unsuitable": "Neodgovarajući sadržaj",
+        "fraud": "Prevara / Sumnjiv oglas",
+        "fake": "Lažne informacije",
+        "other": "Drugo"
+      },
+      "alreadyReported": "Već ste prijavili ovaj oglas.",
+      "mustLogin": "Morate biti prijavljeni da biste prijavili oglas.",
+      "success": "Oglas je uspješno prijavljen.",
+      "error": "Greška pri prijavi oglasa",
+      "checkError": "Greška pri provjeri prijave",
+      "reportAd": "🚨 Prijavi oglas"
+    },
+    "chat": {
+      "mustLogin": "Morate biti prijavljeni da biste poslali poruku.",
+      "errorAuth": "Neautorizovan"
+    },
+    "backToAds": "← Nazad na oglase",
+    "viewFavorites": "💚 Pogledaj omiljene oglase"
+  }
+}

@@ -4,7 +4,7 @@ import "./globals.css";
 import { NewsletterModalContextProvider } from "@/contexts/newsletter-modal.context";
 import { UserProvider } from "@/contexts/UserContext";
 import Navbar from "./components/Navbar";
-
+import ClientWrapper from "../components/ClientWrapper"; // novi klijentski sloj
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,23 +28,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-      </head>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-
-            <UserProvider>
-              <NewsletterModalContextProvider>
-                <Navbar
-                  items={[
-                    { href: "/oglasi_prikaz", title: "Shop" }
-                  ]}
-                />
-                {children}
-              </NewsletterModalContextProvider>
-            </UserProvider>
-
-        </body>
-
+      <head></head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <UserProvider>
+          <NewsletterModalContextProvider>
+            <ClientWrapper>
+              <Navbar items={[{ href: "/oglasi_prikaz", title: "Shop" }]} />
+              {children}
+            </ClientWrapper>
+          </NewsletterModalContextProvider>
+        </UserProvider>
+      </body>
     </html>
   );
 }

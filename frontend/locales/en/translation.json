@@ -1,0 +1,62 @@
+{
+  "filters": {
+    "title": "Search & Filters",
+    "keyword": "Keyword",
+    "location": "Location",
+    "category": "Category",
+    "minPrice": "Min price",
+    "maxPrice": "Max price",
+    "filter": "Filter"
+  },
+  "ads": {
+    "title": "Ads Preview",
+    "loading": "Loading...",
+    "error": "Error",
+    "noAds": "No ads to display.",
+    "archived": "Archived",
+    "featured": "FEATURED"
+  },
+  "details": {
+    "loading": "Loading ad details...",
+    "loadingError": "Error loading ad details",
+    "noImages": "No images available",
+    "imageAlt": "Ad image",
+    "price": "Price",
+    "description": "Description",
+    "views": "{{count}} views",
+    "postedBy": "Posted by",
+    "noUsername": "Unknown user",
+    "highlightAd": "Highlight your ad (50 tokens)",
+    "highlighting": "Highlighting...",
+    "highlightedSuccess": "Ad successfully highlighted.",
+    "openChat": "💬 Open Chat",
+    "addFavorites": "⭐ Add to favorites",
+    "favorites": {
+      "mustLogin": "You must be logged in to add favorites.",
+      "alreadyAdded": "Ad is already in favorites.",
+      "added": "Ad added to favorites.",
+      "error": "Error adding to favorites"
+    },
+    "report": {
+      "reason": "Report reason",
+      "reasonOptions": {
+        "unsuitable": "Unsuitable content",
+        "fraud": "Fraud / Suspicious ad",
+        "fake": "Fake information",
+        "other": "Other"
+      },
+      "alreadyReported": "You have already reported this ad.",
+      "mustLogin": "You must be logged in to report an ad.",
+      "success": "Ad successfully reported.",
+      "error": "Error reporting ad",
+      "checkError": "Error checking report",
+      "reportAd": "🚨 Report ad"
+    },
+    "chat": {
+      "mustLogin": "You must be logged in to send messages.",
+      "errorAuth": "Unauthorized"
+    },
+    "backToAds": "← Back to ads",
+    "viewFavorites": "💚 View favorite ads"
+  }
+}

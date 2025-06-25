@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 interface Oglas {
   id: number;
@@ -13,10 +14,12 @@ interface Oglas {
   kategorija: string;
   slike: string[];
   arhiviran: boolean;
-  istaknut?: boolean; // DODATO
+  istaknut?: boolean;
 }
 
 export default function OglasiPrikaz() {
+  const { t } = useTranslation();
+
   const [oglasi, setOglasi] = useState<Oglas[]>([]);
   const [search, setSearch] = useState("");
   const [lokacija, setLokacija] = useState("");
@@ -56,11 +59,7 @@ export default function OglasiPrikaz() {
       }
 
       const data = await res.json();
-      if (!Array.isArray(data)) {
-        setOglasi([]);
-      } else {
-        setOglasi(data);
-      }
+      setOglasi(Array.isArray(data) ? data : []);
     } catch (err: any) {
       setError(err.message || "Nepoznata greška");
       setOglasi([]);
@@ -72,7 +71,7 @@ export default function OglasiPrikaz() {
   const aktivirajOglas = async (id: number) => {
     try {
       const token = localStorage.getItem("access_token");
-      if (!token) throw new Error("Niste prijavljeni.");
+      if (!token) throw new Error(t("errors.notLoggedIn"));
 
       const res = await fetch(
         `http://localhost:8000/admin/aktiviraj-oglas/${id}`,
@@ -85,10 +84,10 @@ export default function OglasiPrikaz() {
       );
 
       if (!res.ok) {
-        throw new Error("Greška prilikom aktiviranja oglasa.");
+        throw new Error(t("errors.activationFailed"));
       }
 
-      await fetchOglasi(); // Refetch oglasa nakon aktivacije
+      await fetchOglasi();
     } catch (err) {
       console.error("Greška:", err);
     }
@@ -100,7 +99,7 @@ export default function OglasiPrikaz() {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Pretraga i filteri</h2>
+      <h2>{t("filters.title")}</h2>
       <div
         style={{
           display: "flex",
@@ -110,29 +109,29 @@ export default function OglasiPrikaz() {
         }}
       >
         <input
-          placeholder="Ključna riječ"
+          placeholder={t("filters.keyword")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <input
-          placeholder="Lokacija"
+          placeholder={t("filters.location")}
           value={lokacija}
           onChange={(e) => setLokacija(e.target.value)}
         />
         <input
-          placeholder="Kategorija"
+          placeholder={t("filters.category")}
           value={kategorija}
           onChange={(e) => setKategorija(e.target.value)}
         />
         <input
           type="number"
-          placeholder="Min cijena"
+          placeholder={t("filters.minPrice")}
           value={minCijena}
           onChange={(e) => setMinCijena(e.target.value)}
         />
         <input
           type="number"
-          placeholder="Max cijena"
+          placeholder={t("filters.maxPrice")}
           value={maxCijena}
           onChange={(e) => setMaxCijena(e.target.value)}
         />
@@ -141,13 +140,17 @@ export default function OglasiPrikaz() {
           value={datum}
           onChange={(e) => setDatum(e.target.value)}
         />
-        <button onClick={fetchOglasi}>Filtriraj</button>
+        <button onClick={fetchOglasi}>{t("filters.filter")}</button>
       </div>
 
-      <h2>Prikaz oglasa</h2>
+      <h2>{t("ads.title")}</h2>
 
-      {loading && <p>Učitavanje...</p>}
-      {error && <p style={{ color: "red" }}>Greška: {error}</p>}
+      {loading && <p>{t("ads.loading")}</p>}
+      {error && (
+        <p style={{ color: "red" }}>
+          {t("ads.error")}: {error}
+        </p>
+      )}
 
       {!loading && !error && (
         <div
@@ -158,7 +161,7 @@ export default function OglasiPrikaz() {
             justifyContent: "center",
           }}
         >
-          {oglasi.length === 0 && <p>Nema oglasa za prikaz.</p>}
+          {oglasi.length === 0 && <p>{t("ads.noAds")}</p>}
           {oglasi.map((oglas) => (
             <Link
               key={oglas.id}
@@ -190,11 +193,10 @@ export default function OglasiPrikaz() {
                       zIndex: 10,
                     }}
                   >
-                    Arhiviran
+                    {t("ads.archived")}
                   </div>
                 )}
 
-                {/* OVDJE JE OZNKA ZA ISTAKNUTI OGLAS */}
                 {oglas.istaknut && (
                   <div
                     style={{
@@ -210,7 +212,7 @@ export default function OglasiPrikaz() {
                       zIndex: 10,
                     }}
                   >
-                    ISTAKNUT
+                    {t("ads.featured")}
                   </div>
                 )}
 
@@ -241,7 +243,7 @@ export default function OglasiPrikaz() {
                       marginBottom: "10px",
                     }}
                   >
-                    Nema slike
+                    {t("ads.noImage")}
                   </div>
                 )}
 
