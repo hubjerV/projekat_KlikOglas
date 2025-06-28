@@ -68,7 +68,7 @@ app.include_router(admin.router, prefix="/auth")
 app.include_router(prijava_controller.router)
 app.include_router(ocjena.router)
 app.include_router(oglasi_router)
-app.include_router(token_zahtjev.router)
+app.include_router(token_zahtjev.router, prefix="/admin")
 
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

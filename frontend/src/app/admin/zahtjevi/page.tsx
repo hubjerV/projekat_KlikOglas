@@ -28,9 +28,12 @@ export default function AdminTokenZahtjevi() {
 
   const fetchZahtjevi = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/token-zahtjevi/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "http://localhost:8000/admin/token-zahtjevi/",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setZahtjevi(res.data);
 
       // Uzmi sve korisnike kojima pripadaju zahtjevi
@@ -58,7 +61,7 @@ export default function AdminTokenZahtjevi() {
   const obradiZahtjev = async (id: number, akcija: "odobri" | "odbij") => {
     try {
       await axios.post(
-        `http://localhost:8000/token-zahtjevi/${id}/${akcija}`,
+        `http://localhost:8000/admin/token-zahtjevi/${id}/${akcija}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
